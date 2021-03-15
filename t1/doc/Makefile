@@ -9,13 +9,17 @@ LODFIGS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 all: $(FILE).pdf
 	evince $< &
 
-$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave.log ngspice
+$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave_mesh.log octave_node.log ngspice
+	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 
-octave.log:
-	octave ../mat/rc.m > octave.log
+octave_mesh.log:
+	octave ../mat/mesh_analysis_l1.m > octave_mesh.log
+	
+octave_node.log:
+	octave ../mat/node_analysis_l1.m > octave_node.log
 
 ngspice: ngspice.log
 	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))

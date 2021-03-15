@@ -42,8 +42,6 @@ A=[[1 0 0 0 0 0 0];
    
 B=[Va; 0; 0; 0; -Id; 0; Id];
 
-disp(A);
-
 C=A\B;
 
 disp("Nodes");

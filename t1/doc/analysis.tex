@@ -2,13 +2,68 @@
 \label{sec:analysis}
 
 In this section, the circuit shown in Figure~\ref{fig:rc} is analysed
-theoretically, in terms of its time and frequency responses.
+theoretically using methods: Node and Mesh Analysis.
 
 \subsection{Node Analysis}
+
+Before applying the method, it is important to discuss how it works.\\
+In general, it consists of discovering the voltages associated with each node of the circuit - they are the unknown variables in our equations. \\
+In order to obtain these relations, one has to apply \textit{Kirchhoff}'s Current Law (KCL) to the nodes, always having in mind that nodes on the ends of branches containing Independent Voltage Sources cannot be analysed in this way. \\
+\[
+\begin{bmatrix}
+0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0  & 1 & 0 & K_c*G_6 & -1 \\
+G_1 & -(G_1+G_2+G_3) & G_2 & G_3 & 0 & 0 & 0  \\
+0 & K_b+G_2 & -G_2 & -K_b & 0 & 0 & 0 \\
+0 & G_2 & -G_2 & G_5 & -G_5 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & G_6+G_7 & G_7 \\
+0 & 0 & G_3 & 0 & -(G_3+G_4+G_5) & G_5 & G_7 & -G_7
+\end{bmatrix}
+\begin{bmatrix}
+V_1 \\
+V_2 \\
+V_3 \\
+V_4 \\
+V_5 \\
+V_6 \\
+V_7 
+\end{bmatrix}
+=
+\begin{bmatrix}
+V_a \\
+0 \\
+0 \\
+0 \\ 
+-I_d \\
+0 \\
+I_d 
+\end{bmatrix}
+\]
 
 
 \subsection{Mesh Analysis}
 
+In this case 
+Usually, we create \textit{fictious} currents in each mesh and we then apply \textit{Kirchhoff}'s Voltage Law (KVL) to either meshes or loops, depending on if it
+
+\[
+\begin{bmatrix}
+R_1+R_3+R_4 & R_3 & R_4 \\
+-K_bR_3 & 1-K_bR_3 & 0 \\
+R_4 & 0 & (R_4+R_6+R_7-K_c)
+\end{bmatrix}
+\begin{bmatrix}
+I_1 \\
+I_2 \\
+I_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+V_a \\
+0 \\
+0
+\end{bmatrix}
+\
 
 \section{Time response}
 

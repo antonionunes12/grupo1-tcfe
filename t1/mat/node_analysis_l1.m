@@ -1,20 +1,6 @@
 pkg load symbolic
 format long
 
-%{
-syms G1;
-syms G2;
-syms G3;
-syms G4;
-syms G5;
-syms G6;
-syms G7;
-syms Va;
-syms Id;
-syms Kb;
-syms Kc;
-%}
-
  R1=(1.03504497262*1000);
  R2=(2.01159104669*1000);
  R3=(3.03557466091*1000);
@@ -44,14 +30,9 @@ B=[Va; 0; 0; 0; -Id; 0; Id];
 
 C=A\B;
 
-disp("Nodes");
-disp(C);
+for n=1:size(C,1)
+  string=strcat("V",num2str(n),"\t&\t",num2str(C(n,1)));
+  disp(string);
+end
 
-disp("Currents");
-I1=(C(1)-C(2))*G1;
-I2=(C(3)-C(2))*G2;
-I3=(-C(6))*G6;
-disp(I1);
-disp(I2);
-disp(I3);
 

@@ -12,14 +12,12 @@ all: $(FILE).pdf
 $(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave_mesh.log octave_node.log ngspice
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
-	pdflatex  $(FILE).tex
-	pdflatex  $(FILE).tex
 
 octave_mesh.log:
-	octave ../mat/mesh_analysis_l1.m > octave_mesh.log
+	octave ../mat/mesh_analysis_l1.m > octave_mesh.tex
 	
 octave_node.log:
-	octave ../mat/node_analysis_l1.m > octave_node.log
+	octave ../mat/node_analysis_l1.m > octave_node.tex
 
 ngspice: ngspice.log
 	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))
@@ -40,6 +38,7 @@ clean:
 	@rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof
 	@rm -rf *.log *.lot *.nlo *.nls *.out *.toc *~ *.*% ./*.pdf ./*.ps
 	@rm -rf *_tab.tex octave-workspace *.eps
+	@rm -rf *_mesh.tex *_node.tex
 
 .PHONY: all clean ngspice octave
 

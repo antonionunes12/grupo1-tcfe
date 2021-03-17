@@ -19,5 +19,7 @@ B=[Va;0;0];
  
 C=A\B;
 
-disp("Currents"); 
-disp(C);
+for n=1:size(C,1)
+  string=strcat("I",num2str(n),"\t&\t",num2str(C(n,1)));
+  disp(string);
+end

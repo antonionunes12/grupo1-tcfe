@@ -1,4 +1,5 @@
 pkg load symbolic
+format long
 
  R1=(1.03504497262*1000);
  R2=(2.01159104669*1000);

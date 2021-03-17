@@ -31,7 +31,7 @@ B=[Va; 0; 0; 0; -Id; 0; Id];
 C=A\B;
 
 for n=1:size(C,1)
-  string=strcat("V",num2str(n),"\t&\t",num2str(C(n,1)));
+  string=strcat("V",num2str(n),"\t&\t",num2str(C(n,1)),"\\","\\"," \\hline");
   disp(string);
 end
 

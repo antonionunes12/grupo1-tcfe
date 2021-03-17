@@ -1,5 +1,4 @@
 pkg load symbolic
-format long
 
  R1=(1.03504497262*1000);
  R2=(2.01159104669*1000);
@@ -20,6 +19,6 @@ B=[Va;0;0];
 C=A\B;
 
 for n=1:size(C,1)
-  string=strcat("I",num2str(n),"\t&\t",num2str(C(n,1)));
+  string=strcat("I_M",num2str(n),"\t&\t",num2str(C(n,1)*10*10*10),"\\","\\"," \\hline");
   disp(string);
 end

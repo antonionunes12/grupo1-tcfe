@@ -19,6 +19,6 @@ B=[Va;0;0];
 C=A\B;
 
 for n=1:size(C,1)
-  string=strcat("I_M",num2str(n),"\t&\t",num2str(C(n,1)*10*10*10),"\\","\\"," \\hline");
+  string=strcat("$I_{M_",num2str(n),"}$\t&\t",num2str(C(n,1)*10*10*10),"\\","\\"," \\hline");
   disp(string);
 end

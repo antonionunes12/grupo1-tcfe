@@ -16,7 +16,6 @@
 \usepackage{listings}
 \usepackage[all]{nowidow}
 \usepackage{amsmath}
-
 %blind text
 \usepackage{lipsum}
 
@@ -34,9 +33,9 @@
   \usefont{T1}{phv}{m}{n}\fontsize{12pt}{12pt}\selectfont}
 
 % Use Arial font as default
-%
 \renewcommand{\rmdefault}{phv}
 \renewcommand{\sfdefault}{phv}
+
 \usepackage{geometry}	
 \geometry{verbose,tmargin=2.5cm,bmargin=2.5cm,lmargin=2.5cm,rmargin=2.5cm}
 
@@ -73,6 +72,8 @@
 \usepackage[numbers,sort&compress]{natbib} % <<<<< References in numbered list [1],[2],...
 \usepackage{subcaption} 
 \usepackage{mdframed}
+\usepackage{indentfirst}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %     Begin Document                                                   %
@@ -118,8 +119,9 @@
 
 % Table of contents
 %
-\tableofcontents
 
+\tableofcontents
+\setcounter{page}{1}
 % List of tables
 \addcontentsline{toc}{section}{\listtablename}
 \listoftables
@@ -128,13 +130,7 @@
 % List of figures
 \addcontentsline{toc}{section}{\listfigurename}
 \listoffigures
-\cleardoublepage
- 
-
-% Set arabic numbering (1,2,...) after preface
-%
-\setcounter{page}{1}
-\pagenumbering{arabic}
+\pagebreak
 
 % ----------------------------------------------------------------------
 %  Body
@@ -159,4 +155,3 @@
 % ----------------------------------------------------------------------
 \end{document}
 % ----------------------------------------------------------------------
-

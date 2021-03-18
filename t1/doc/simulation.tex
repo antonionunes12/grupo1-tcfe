@@ -3,9 +3,8 @@
 
 \subsection{Operating Point Analysis}
 
-Table~\ref{tab:op} shows the simulated operating point results for the circuit
-under analysis. Compared to the theoretical analysis results, one notices the
-following differences: describe and explain the differences.
+In this section, we present the results given by the \emph{Ngspice} simulation of the circuit in Figure \ref{fig:alternative_circuit_for_ngspice}.Table~\ref{tab:op} shows the simulated operating point results for the circuit
+under analysis.
 
 \begin{table}[h]
   \centering
@@ -14,74 +13,20 @@ following differences: describe and explain the differences.
     {\bf Name} & {\bf Value [A or V]} \\ \hline
     \input{op_tab}
   \end{tabular}
-  \caption{Operating point. A variable preceded by @ is of type {\em current}
-    and expressed in Ampere; other variables are of type {\it voltage} and expressed in
-    Volt.}
+  \caption[Simulation of Currents and Voltages]{Simulation of Currents and Voltages\footnotemark}
   \label{tab:op}
 \end{table}
+\footnotetext{Variables preceded by @ denote {\em currents} and are expressed in Ampere; the remaining variables are {\it voltages} and are expressed in Volt. Gb represents the current controlled current source.}
+It should be stated that one node was added between resistors R6 and R7 in order to add a dummy 0V-voltage source in that location. This was done as a work-around the mechanics of \emph{Ngspice} to enable the voltage source $V_c$ to be controlled by the current passing through $R_6$, $I_c$, and has no real impact on the circuit itself since that, by definition a voltage source has $0\Omega$ resistance, and so it doesn't change the current neither the voltage drop between the nodes. This is the reason why, on Table \ref{tab:op}, we have v(6) and v(7) outputting the same value.
 
-\lipsum[1-1]
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.32]{dummy_voltage_source.pdf}
+    \caption{Circuit with Dummy Voltage Source}
+    \label{fig:alternative_circuit_for_ngspice}
+\end{figure}
 
-
-\subsection{Transient Analysis}
-
-Figure~\ref{fig:trans} shows the simulated transient analysis results for the
-circuit under analysis. Compared to the theoretical analysis results, one
-notices the following differences: describe and explain the differences.
-
-%\begin{figure}[h] \centering
-%\includegraphics[width=0.6\linewidth]{trans.pdf}
-%\caption{Transient output voltage}
-%\label{fig:trans}
-%\end{figure}
-
-\lipsum[1-1]
-
-
-
-\subsection{Frequency Analysis}
-
-\subsubsection{Magnitude Response}
-
-Figure~\ref{fig:acm} shows the magnitude of the frequency response for the
-circuit under analysis. Compared to the theoretical analysis results, one
-notices the following differences: describe and explain the differences.
-
-%\begin{figure}[h] \centering
-%\includegraphics[width=0.6\linewidth]{acm.pdf}
-%\caption{Magnitude response}
-%\label{fig:acm}
-%\end{figure}
-
-\lipsum[1-1]
-
-\subsubsection{Phase Response}
-
-Figure~\ref{fig:acp} shows the magnitude of the frequency response for the
-circuit under analysis. Compared to the theoretical analysis results, one
-notices the following differences: describe and explain the differences.
-
-%\begin{figure}[h] \centering
-%\includegraphics[width=0.6\linewidth]{acp.pdf}
-%\caption{Phase response}
-%\label{fig:acp}
-%\end{figure}
-
-\lipsum[1-1]
-
-\subsubsection{Input Impedance}
-
-Figure~\ref{fig:zim} shows the magnitude of the frequency response for the
-circuit under analysis. Compared to the theoretical analysis results, one
-notices the following differences: describe and explain the differences.
-
-%\begin{figure}[h] \centering
-%\includegraphics[width=0.6\linewidth]{zim.pdf}
-%\caption{Input impedance}
-%\label{fig:zim}
-%\end{figure}
-
-\lipsum[1-1]
+\clearpage
 
 
 

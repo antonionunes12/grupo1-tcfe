@@ -19,6 +19,7 @@ In order to obtain a fully determined system of equations, we might need to insp
 
 The resultant system of equations, in the matrix and symbolic form is,\\
 \begin{equation}
+\label{eq:node}
 \begin{bmatrix}
 1 & 0 & 0 & 0 & 0 & 0 & 0 \\
 0 & 0 & 0  & 1 & 0 & K_cG_6 & -1 \\
@@ -86,6 +87,7 @@ In the circuit, we have XX meshes, XX supermeshes and XX additional equations.
 Just with a glance we can realise that the equations provide a much smaller matrix, when compared to the previous one. This is expectable since there is a greater number of nodes when compared to meshes (this phenomena is detailed in Section \ref{subsec:relation_mesh_node}),
 
 \begin{equation}
+\label{eq_mesh}
 \begin{bmatrix}
 R_1+R_3+R_4 & R_3 & R_4 \\
 -K_bR_3 & 1-K_bR_3 & 0 \\
@@ -103,6 +105,7 @@ V_a \\
 0
 \end{bmatrix}
 \end{equation}
+
 
 where $I_{M_i}\equiv$ the \textit{fictitious} current on mesh $M_i$.
 
@@ -131,46 +134,81 @@ However, \textit{Ngspice}, the software used to analyse the circuit in a non-man
 
 This occurs mainly for one reason. In a topological point of view, it is easier for machines and programs to identify nodes rather than meshes. The latter requires a level of processing higher than the first, which makes it a worst choice, increasing the complexity of tasks a computer needs to execute, and so the precious time of processing.
 
-In spite of that, the choice of node analysis might bring problems as we saw previously, regarding the existence of Voltage Sources. Hence, software adapt the nodal analysis in order to perform under any kind of circuit, what we call the \textit{Modified Nodal Analysis}.
+In spite of that, the choice of node analysis might bring problems as we saw previously, regarding the existence of Voltage Sources. Hence, software adapt the nodal analysis in order to perform under any kind of linear circuit, what we call the \textit{Modified Nodal Analysis} and by having a systematical method that works always.
  
-It may be relevant to discuss briefly this method as it generated the results seen in \ref{tab:op}.
+It may be relevant to discuss briefly this method as it generated the results seen in \ref{tab:op}. \par
+In Nodal Analysis one cannot write equations for nodes connected to Voltage Sources using KCL since we don't know the current passing through these elements. 
+However in MNA we assign an unknown current to a voltage source, hence creating new unknowns. We also relate the voltage drop between nodes and voltage source imposed.  We later apply KCL to all the nodes and solve the system.
 
-The main 
 
+\pagebreak
 \subsection{Results}
+\label{subsec:results}
 
 In this last section we will discuss the results that the methods studied provided. The resolution of the equations on the matrix-form was done with the help of \textit{Octave}. 
 
-For the first method (see subsection \ref{subsec:node_analysis} it is pertinent to refer that the solution is a matrix with an incredible amount of terms, so it would be almost impossible, if not painful, to insert the solution in the present document. 
-The solutions, after substituting the values of the resistances and other constants are presented below,
 
-\pagebreak
+The data used for solving the circuit was generated with the provided Python script, using the student number 95770, and can be found in the table below:
 \begin{table}[h]
+\parbox{.36\linewidth}{
   \centering
-  \begin{tabular}{|l|r|}
+  \begin{tabular}{|c|c|}
+    \hline
+
+    {\bf Name} & {\bf Value [Units]} \\ \hline
+    R1 & 1.03504497262 [$k\Omega$]\\ \hline
+    R2 & 2.01159104669 [$k\Omega$]\\ \hline
+    R3 & 3.03557466091 [$k\Omega$]\\ \hline
+    R4 & 4.10235086526 [$k\Omega$]\\ \hline
+    R5 & 3.09889833746 [$k\Omega$]\\ \hline
+    R6 & 2.00952426524 [$k\Omega$]\\ \hline
+    R7 & 1.04158528578 [$k\Omega$]\\ \hline
+    Va & 5.22552047598 [$k\Omega$]\\ \hline
+    Kb & 7.3172497028 [$mS$]\\ \hline
+    Kc & 8.09359354837 [$k\Omega$]\\ \hline
+    Id & 1.04791133328 [$mA$]\\ \hline
+    
+  \end{tabular}
+  \caption[Data used]{Data used}
+  \label{tab:data}
+  }
+  \hfill
+  \parbox{.25\textwidth}{
+  \centering  
+  \begin{tabular}{|c|c|}
     \hline    
-    {\bf Name} & {\bf Value [V]} \\ \hline
+    {\bf Name} & {\bf Value [$V$]} \\ \hline
     \input{octave_node.tex}
   \end{tabular}
   \caption[Results using Nodal Analysis]{Results using Nodal Analysis}
   \label{tab:nodal}
-\end{table}
-
-Obviously, the currents are no direct solutions of the matrix, but are derived using \textit{Ohm}'s Law.
-
-For the second method (see subsection \ref{subsec:mesh_analysis}) the solutions are,
-
-\begin{table}[h]
+  }
+  \hfill
+  \parbox{0.25\textwidth}{
   \centering
-  \begin{tabular}{|l|r|}
+  \begin{tabular}{|c|c|}
     \hline    
-    {\bf Name} & {\bf Value [mA]} \\ \hline
+    {\bf Name} & {\bf Value [$mA$]} \\ \hline
     \input{octave_mesh.tex}
   \end{tabular}
   \caption[Results using Mesh Analysis]{Results using Mesh Analysis}
   \label{tab:mesh}
+  }
 \end{table}
 
-And the voltages, analogously, to what was stated before, are derived. 
+For the Nodal Analysis (see subsection \ref{subsec:node_analysis}) it is pertinent to address that the solution is a matrix with an incredible amount of terms, so it would be almost impossible, if not painful, to insert the symbolic solution in the present document. The solutions, after substituting the values of the resistances and other constants (from table \ref{tab:data}) are presented in table \ref{tab:nodal}.
+
+Analogously, for the Mesh Analysis (see subsection \ref{subsec:mesh_analysis}) the results are shown in table \ref{tab:mesh}.
+
+To verify the equivalence of both methods, with the use of \textit{Ohm}'s Law, one should try to calculate the current through a circuit resistor using the voltage drop from two consecutive nodes, from the Nodal Analysis, or doing the reciprocal: to derive the nodal voltages using the current from the Mesh Analysis.
+Here's an example of the equivalence cited using Ohm's Law:
+
+\begin{align}
+    0.2362 [V] = V_1-V_2 = R_1I_{M_1} 
+    \Longleftrightarrow I_{M_1} = \frac{V_1-V_2}{R_1} = 0.2282 [mA]  
+\end{align}
+Bearing that $V_1-V_2$ is the voltage drop between $R_1$.
+
+Doing the same for the rest of the components proves, somewhat, that both analysis lead to the same results. To confirm them completely, we should compare them to the real results obtained from the simulation that we're about to explore in section \ref{sec:simulation}. This comparison and verification can be found in the conclusion (section \ref{sec:conclusion}).
 
 \clearpage

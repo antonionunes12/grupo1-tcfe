@@ -27,7 +27,7 @@ under analysis.
 \end{table}
 
 \footnotetext{Variables preceded by @ denote {\em currents} and are expressed in Ampere; the remaining variables are {\it voltages} and are expressed in Volt. Gb represents the voltage controlled current source.}
-It should be stated that one node was added between resistors R6 and R7 in order to add a dummy 0V-voltage source in that location. This was done as a work-around the mechanics of \emph{Ngspice} \footnote{ Ngspice software only accpets controlling currents that pass in a voltage source. In our example the controling current $I_c$ passes through a resistor.} to enable the voltage source $V_c$ to be controlled by the current passing through $R_6$, $I_c$, and has no real impact on the circuit itself since that, by definition a voltage source has $0\Omega$ resistance, and so it doesn't change the current neither the voltage drop between the nodes. This is the reason why, on Table \ref{tab:op}, we have v(6) and v(7) outputting the same value.
+It should be stated that one node was added between resistors R6 and R7 in order to add a dummy 0V-voltage source in that location. This was done as a work-around the mechanics of \emph{Ngspice} \footnote{Ngspice software only accepts controlling currents that pass in a voltage source. In our example the controling current $I_c$ passes through a resistor.} to enable the voltage source $V_c$ to be controlled by the current passing through $R_6$, $I_c$, and has no real impact on the circuit itself since that, by definition an ideal voltage source has a $0\Omega$ resistance, and so it doesn't change the current neither the voltage drop between the nodes. This is the reason why, on Table \ref{tab:op}, we have v(6) and v(7) outputting the same value.
 
 \clearpage
 

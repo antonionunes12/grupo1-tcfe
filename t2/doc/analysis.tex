@@ -1,0 +1,231 @@
+\section{Theoretical Analysis}
+\label{sec:analysis}
+
+In this section, the circuit shown in Figure~\ref{fig:circuitol1} is analysed
+theoretically using two methods: Nodal and Mesh Analysis.
+
+\subsection{Nodal Analysis} 
+\label{subsec:node_analysis} 
+
+Before applying the method, it is important to discuss how it works. In general, it consists of discovering the voltages associated with each node of the circuit - they are the unknown variables in our equations. To obtain those, one has to apply \textit{Kirchhoff}'s Current Law (KCL) to the nodes, always having in mind that nodes on the ends of branches containing  Voltage Sources cannot be analysed in this way.
+
+In order to obtain a fully determined system of equations, we might need additional equations, \textit{i.e.} equations derived from the circuit by inspecting. If we apply this method to the circuit in question, we end with 4 node equations, 1 supernode equation and 3 additional equations. 
+
+\begin{figure}[h] \centering
+\includegraphics[width=0.5\linewidth]{nodal_analysis.pdf}
+\caption{Node Numbering}
+\label{fig:node_numbering}
+\end{figure}
+
+The resultant system of equations, in the matrix and symbolic form is,\\
+\begin{equation}
+\label{eq:node}
+\begin{bmatrix}
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0  & 1 & 0 & K_cG_6 & -1 \\
+G_1 & -(G_1+G_2+G_3) & G_2 & G_3 & 0 & 0 & 0  \\
+0 & K_b+G_2 & -G_2 & -K_b & 0 & 0 & 0 \\
+0 & -G_2 & G_2 & -G_5 & G_5 & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & G_6+G_7 & G_7 \\
+0 & G_3 & 0 & -(G_3+G_4+G_5) & G_5 & G_7 & -G_7
+\end{bmatrix}
+\begin{bmatrix}
+V_1 \\
+V_2 \\
+V_3 \\
+V_4 \\
+V_5 \\
+V_6 \\
+V_7 
+\end{bmatrix}
+=
+\begin{bmatrix}
+V_a \\
+0 \\
+0 \\
+0 \\ 
+I_d \\
+0 \\
+I_d 
+\end{bmatrix}
+\end{equation}
+
+Where $G_i\equiv $ conductance of the $i^{th}$ resistor.
+
+\vspace{0.75cm}
+
+Since, for the Node Analysis method, the voltages used refer to the different nodes, we are free to set a reference point in whatever node we desire. Note that this has no real impact on the voltage drops on each component, since those are calculated by taking the difference of the nodal voltages on each of the component's ends. Doing so, we should clarify that the voltage associated with the relative Ground (GND), $V_0$, was omitted from the matrix because it leads to a trivial relation: 
+
+\begin{equation}
+  V_0 = 0  
+\end{equation}
+
+\noindent which can be directly substituted on the remaining equations. We could do the same for $V_1$ but it feels unnecessary and would be making the other equations harder to decipher. That said, you can clearly see from the first line of the matrix that $V_1$ is directly associated with $V_a$:
+
+\begin{equation}
+    V_1 = V_a     
+\end{equation}
+
+\noindent An adittional equation comes from
+\begin{equation}
+    V_c = V_4 - V_7 = K_cI_c = K_c(-V_6)G_6 \implies V_4+V_6(K_cG_6)-V_7=0
+\end{equation}
+which corresponds to the second line of the matrix in \ref{eq:node}.
+
+The following 4 equations come from nodes 2, 3, 5, 6, respectively applying the linear relations described.
+The last equation is obtained from «merging» nodes 4 and 7, and comparing the currents that enter and exit this «supernode» \footnote{Note that this is possible due to the linear properties of KCL}.
+
+\subsection{Mesh Analysis}
+\label{subsec:mesh_analysis}
+
+In this second method, instead of looking for nodes, we are interested in meshes (as the method's name indicates).
+
+Usually, we create \textit{fictitious} currents in each mesh and we then apply \textit{Kirchhoff}'s Voltage Law (KVL) to either the individual meshes, or to a loop. 
+This difference occurs because sometimes, analogously to the previous method, we are unable to provide an equation for a given mesh, specially if there are Current Sources involved. 
+
+In that case, one has to look for additional equations by, for example, attributing the values of known currents to \textit{fictitious} ones. Another option is to analyse supermeshes, \textit{i.e.} non-elementary loops, that avoid these components.
+
+For the analysis in questions, we make use of 2 meshes, 0 supermeshes and 2 additional equations.
+
+
+\begin{figure}[h] \centering
+\includegraphics[width=0.5\linewidth]{mesh_currents.pdf}
+\caption{Mesh Numbering}
+\label{fig:mesh_numbering}
+\end{figure}
+\vspace{3cm}
+\pagebreak
+
+Just with a glance we can realise that the equations provide a much smaller matrix, when compared to the previous one. This is expected since there is a greater number of nodes when compared to meshes (this phenomena is detailed in Section \ref{subsec:relation_mesh_node}),
+
+\begin{equation}
+\label{eq_mesh}
+\begin{bmatrix}
+R_1+R_3+R_4 & R_3 & R_4 \\
+-K_bR_3 & 1-K_bR_3 & 0 \\
+R_4 & 0 & (R_4+R_6+R_7-K_c)
+\end{bmatrix}
+\begin{bmatrix}
+I_{M_1}\\
+I_{M_2} \\
+I_{M_3}
+\end{bmatrix}
+=
+\begin{bmatrix}
+V_a \\
+0 \\
+0
+\end{bmatrix}
+\end{equation}
+
+
+where $I_{M_i}\equiv$ the \textit{fictitious} current on mesh $M_i$.
+
+Above, we present a $3X3$ matrix, although it is simple to observe that the circuit has 4 meshes. We obviously omitted one \textit{fictitious current} because it is trivial to conclude by inspection that the current that flows through Mesh $4$ is actually the current from the current source $I_d$. So, the fourth equation would be:
+
+\begin{equation}
+    I_{M_4}=I_d
+\end{equation}
+
+From applying KVL to meshes M1 and M3 one can easily define the first and third equations in matrix \ref{eq_mesh}, respectively.
+
+The second matrix equation comes from inspecting directly mesh M2. 
+\begin{equation}
+    I_{M_2}= I_b = K_bV_b = K_b(I_{M_1}+I_{M_2})R_3 \implies K_bR_3I_{M_1} + (K_bR_3-1) I_{M_2} = 0
+\end{equation}
+
+\pagebreak
+\subsection{Relationship between both methods}
+\label{subsec:relation_mesh_node}
+
+We should note that, while the methods used clearly differ in the way they're applied, they are, obviously, intimately connected and the results given by one can be derived from the other's.
+
+For example, given the voltage values on each node from the Node Analysis, we can easily compute the voltage drops on each of the resistors and by applying \textit{Ohm}'s law, get the values of the current flowing through them.
+On the other hand, given the current values calculated with the use of the Mesh Analysis method, we can do the opposite to get the nodal voltages. An example is given in Section \ref{subsec:results}.
+
+Since, for the voltage drops in each component, you need 2 values (one for each of the nodal voltages) it is easy to see that you'll quite surely end up with more equations, and thus a bigger matrix to solve, when doing a Nodal Analysis. However, as will be explained in greater detail in Section \ref{subsec_mna}, a similar method is implemented by circuit solvers like \textit{Ngspice}.
+
+\subsection{Modified Nodal Analysis (MNA)}
+\label{subsec_mna}
+
+One can see that it is trivial to find the meshes in a plane circuit. When it comes to the nodes, there can be an increment of complexity, even though it still doesn't offer much difficulty for humans.
+
+However, \textit{Ngspice}, and in general the majority of circuit simulators, prefers to analyse nodes rather than meshes. This occurs mainly for one reason. In a topological point of view, it is easier for machines and programs to identify nodes. The latter requires a level of processing higher than the first, which makes it a worse choice in most cases, increasing the complexity of tasks a computer needs to execute, and consequently the amount of processing time.
+
+In spite of that, the choice of nodal analysis might bring problems as we saw previously, regarding the existence of Voltage Sources. Hence, the software adapts the nodal analysis by having a systematical method, in order to perform under any kind of circuit, what we call the \textit{Modified Nodal Analysis}, or simply MNA.
+ 
+It may be relevant to discuss briefly this method as it generated the results seen in Table \ref{tab:op}. \par
+Since in Nodal Analysis one cannot write equations for nodes connected to Voltage Sources using KCL, in MNA\footnote{Procedure seen in https://www.swarthmore.edu/NatSci/echeeve1/Ref/mna/MNA2.html, accessed on March 20th 2021} we assign an unknown current to a voltage source, hence creating new unknowns. We also relate the voltage drop between nodes and voltage source imposed.  We later apply KCL to all the nodes and solve the system. Some benefits to this method are that the computer doesn't need to compute any supernodes and in the final matrix we have results regarding both voltages and currents.
+
+
+\pagebreak
+\subsection{Results}
+\label{subsec:results}
+
+In this last section we will discuss the results that the methods studied provided. The resolution of the equations on the matrix-form was done with the help of \textit{Octave}. 
+
+
+The data used for solving the circuit was generated with the provided \textit{Python} script, using the student number $95770$, and can be found in the table below:
+\begin{table}[h]
+\parbox{.36\linewidth}{
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline
+
+    {\bf Name} & {\bf Value [Units]} \\ \hline
+    R1 & 1.03504497262 [$k\Omega$]\\ \hline
+    R2 & 2.01159104669 [$k\Omega$]\\ \hline
+    R3 & 3.03557466091 [$k\Omega$]\\ \hline
+    R4 & 4.10235086526 [$k\Omega$]\\ \hline
+    R5 & 3.09889833746 [$k\Omega$]\\ \hline
+    R6 & 2.00952426524 [$k\Omega$]\\ \hline
+    R7 & 1.04158528578 [$k\Omega$]\\ \hline
+    Va & 5.22552047598 [$V$]\\ \hline
+    Kb & 7.3172497028 [$mS$]\\ \hline
+    Kc & 8.09359354837 [$k\Omega$]\\ \hline
+    Id & 1.04791133328 [$mA$]\\ \hline
+    
+  \end{tabular}
+  \caption[Data used]{Data used}
+  \label{tab:data}
+  }
+  \hfill
+  \parbox{.25\textwidth}{
+  \centering  
+  \begin{tabular}{|c|c|}
+    \hline    
+    {\bf Name} & {\bf Value [$V$]} \\ \hline
+    \input{octave_node.tex}
+  \end{tabular}
+  \caption[Results using Nodal Analysis]{Results using Nodal Analysis}
+  \label{tab:nodal}
+  }
+  \hfill
+  \parbox{0.25\textwidth}{
+  \centering
+  \begin{tabular}{|c|c|}
+    \hline    
+    {\bf Name} & {\bf Value [$mA$]} \\ \hline
+    \input{octave_mesh.tex}
+  \end{tabular}
+  \caption[Results using Mesh Analysis]{Results using Mesh Analysis}
+  \label{tab:mesh}
+  }
+\end{table}
+
+For the Nodal Analysis (see subsection \ref{subsec:node_analysis}) it is pertinent to address that the solution is a matrix with an incredible amount of terms, so it would be almost impossible, if not painful, to insert the symbolic solution in the present document. The solutions, after substituting the values of the resistances and other constants (from Table \ref{tab:data}) are presented in Table \ref{tab:nodal}.
+
+Analogously, for the Mesh Analysis (see Subsection \ref{subsec:mesh_analysis}) the results are shown in Table \ref{tab:mesh}.
+
+As stated in Section \ref{subsec:relation_mesh_node}, one can verify the equivalence of both methods, with the use of \textit{Ohm}'s Law, calculating the current flowing through the resistors using the voltage drop from two consecutive nodes, from the Nodal Analysis, or doing the reciprocal: to derive the nodal voltages using the current from the Mesh Analysis.
+Here's an example of the equivalence cited using Ohm's Law:
+
+\begin{align}
+    0.2362 [V] = V_1-V_2 = R_1I_{M_1} 
+    \Longleftrightarrow I_{M_1} = \frac{V_1-V_2}{R_1} = 0.2282 [mA]  
+\end{align}
+Bearing that $V_1-V_2$ is the voltage drop between $R_1$.
+
+Doing the same for the rest of the components proves, somewhat, that both analysis lead to the same results. Moreover, we should compare them to the real results obtained from the simulation that we're about to explore in Section \ref{sec:simulation}. This comparison can be found in the conclusion (Section \ref{sec:conclusion}).
+
+\clearpage

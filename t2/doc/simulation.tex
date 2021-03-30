@@ -1,0 +1,35 @@
+\section{Simulation Analysis}
+\label{sec:simulation}
+
+\subsection{Operating Point Analysis}
+
+In this section, the results given by the \textit{Ngspice} simulation are presented in Figure \ref{fig:alternative_circuit_for_ngspice}. Table \ref{tab:op} shows the simulated operating point results for the circuit
+under analysis.
+
+\begin{table}[h]
+  \begin{minipage}{0.4\textwidth}
+  \centering
+  \begin{tabular}{|l|c|}
+    \hline    
+    {\bf Name} & {\bf Value [$A$ or $V$]} \\ \hline
+    \input{op_tab}
+  \end{tabular}
+  \caption[Simulation of Currents and Voltages]{Simulation of Currents and Voltages\footnotemark}
+  \label{tab:op}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.53\textwidth}
+    \centering
+    \includegraphics[scale=0.42]{dummy_voltage_source.pdf}
+    \captionof{figure}{Circuit with Dummy Voltage Source}
+    \label{fig:alternative_circuit_for_ngspice}
+  \end{minipage}
+\end{table}
+
+\footnotetext{Variables preceded by @ denote {\em currents} and are expressed in Ampere; the remaining variables are {\it voltages} and are expressed in Volt. Gb represents the voltage controlled current source.}
+It should be stated that one node was added between resistors R6 and R7 in order to add a dummy 0V-voltage source in that location. This was done as a work-around the mechanics of \emph{Ngspice} \footnote{Ngspice software only accepts controlling currents that pass in a voltage source. In our example the controling current $I_c$ passes through a resistor.} to enable the voltage source $V_c$ to be controlled by the current passing through $R_6$, $I_c$, and has no real impact on the circuit itself since that, by definition an ideal voltage source has a $0\Omega$ resistance, and so it doesn't change the current neither the voltage drop between the nodes. This is the reason why, on Table \ref{tab:op}, we have v(6) and v(7) outputting the same value.
+
+\clearpage
+
+
+

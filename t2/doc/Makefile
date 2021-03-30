@@ -9,9 +9,20 @@ LODFIGS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 all: $(FILE).pdf
 	evince $< &
 
-$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave_mesh.log octave_node.log ngspice
+$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) pythonscript concat_files octave_mesh.log octave_node.log ngspice
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
+	
+pythonscript:
+	@echo
+	@echo ************Introduza o número de aluno************
+	python2.7 t2_datagen.py > data.txt
+	
+concat_files: pythonscript
+	sed -i '1,14d' ../mat/rc_circuit.m
+	cat data.txt ../mat/rc_circuit.m > rc_circuit_copy.m
+	cp -f rc_circuit_copy.m ../mat/rc_circuit.m
+	@rm -rf *_copy.m
 
 octave_mesh.log:
 	octave ../mat/mesh_analysis_l1.m > octave_mesh.tex
@@ -38,7 +49,7 @@ clean:
 	@rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof
 	@rm -rf *.log *.lot *.nlo *.nls *.out *.toc *~ *.*% ./*.pdf ./*.ps
 	@rm -rf *_tab.tex octave-workspace *.eps
-	@rm -rf *_mesh.tex *_node.tex
+	@rm -rf *_mesh.tex *_node.tex *.txt *_delete.m
 
 .PHONY: all clean ngspice octave
 

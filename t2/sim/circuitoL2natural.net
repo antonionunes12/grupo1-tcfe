@@ -1,0 +1,60 @@
+Circuito L2 Nat
+*
+* NGSPICE simulation script
+* Linear Circuit Analysis
+*
+
+.options savecurrents
+
+*Capacitor
+C 6 8 1.04791133328u ic=8.801255022
+
+*Indepedent Voltage Source
+Vs 1 0 0
+
+*Resistors
+R1 1 2 1.03504497262k
+R2 3 2 2.01159104669k 
+R3 2 5 3.03557466091k
+R4 5 0 4.10235086526k
+R5 5 6 3.09889833746k
+R6 0 7 2.00952426524k
+R7 ne 8 1.04158528578k
+
+*Dummy 0V-Voltage Source to Measure Current through R6 (Ic)
+Vaux 7 ne 0.0
+
+*Current Controlled Voltage Source
+Hc 5 8 Vaux 8.09359354837k
+
+*Voltage Controlled Current Source
+Gb 6 3 (2,5) 7.3172497028m
+
+.ic v(6)=8.801255022 v(8)=0
+.model linearcircuit NPN
+.control
+*makes plots in color
+set hcopypscolor=0
+set color0=white
+set color1=black
+set color2=red
+set color3=blue
+set color4=violet
+set color5=rgb:3/8/0
+set color6=rgb:4/0/0
+
+op
+
+echo "********************************************"
+echo  "Operating point"
+echo "********************************************"
+
+echo "op_TAB"
+run
+tran 1u 20m 0 uic
+echo "op_END"
+hardcopy spicenat.ps v(6)
+quit
+.endc
+
+.end

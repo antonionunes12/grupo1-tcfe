@@ -43,49 +43,109 @@ format long
     
  B=[0;Vs;0;0;0;0;0;0];
  
- C=A\B;
+ V=A\B;
  
-for n=1:size(C,1)
-  string=strcat("V",num2str(n),"\t&\t",num2str(C(n,1),'%.6f'),"\\","\\"," \\hline");
-  disp(string);
+ f_node_analysis=fopen('node_analysis_init_del.tex', 'w');
+ 
+for n=1:size(V,1)
+  string=strcat("V",num2str(n),"\t&\t",num2str(V(n,1),'%.6f'),'\\','\\','\\',"hline\n");
+  fprintf(f_node_analysis,string);
 end
 
-IR1=G1*(C(1)-C(2))*1000;
-string=strcat("@IR1","\t&\t",num2str(IR1,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR1=G1*(V(1)-V(2))*1000;
+string=strcat("@IR1","\t&\t",num2str(IR1,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
   
-IR2=G2*(C(3)-C(2))*1000;
-string=strcat("@IR2","\t&\t",num2str(IR2,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR2=G2*(V(3)-V(2))*1000;
+string=strcat("@IR2","\t&\t",num2str(IR2,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
-IR3=G3*(C(2)-C(5))*1000;
-string=strcat("@IR3","\t&\t",num2str(IR3,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR3=G3*(V(2)-V(5))*1000;
+string=strcat("@IR3","\t&\t",num2str(IR3,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
-IR4=G4*(C(5)-C(4))*1000;
-string=strcat("@IR4","\t&\t",num2str(IR4,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR4=G4*(V(5)-V(4))*1000;
+string=strcat("@IR4","\t&\t",num2str(IR4,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
-IR5=G5*(C(5)-C(6))*1000;
-string=strcat("@IR5","\t&\t",num2str(IR5,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR5=G5*(V(5)-V(6))*1000;
+string=strcat("@IR5","\t&\t",num2str(IR5,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
-IR6=G6*(C(4)-C(7))*1000;
-string=strcat("@IR6","\t&\t",num2str(IR6,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR6=G6*(V(4)-V(7))*1000;
+string=strcat("@IR6","\t&\t",num2str(IR6,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
-IR7=G7*(C(7)-C(8))*1000;
-string=strcat("@IR7","\t&\t",num2str(IR7,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+IR7=G7*(V(7)-V(8))*1000;
+string=strcat("@IR7","\t&\t",num2str(IR7,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
-Ib=Kb*(C(2)-C(5))*1000;
-string=strcat("@Ib","\t&\t",num2str(Ib,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+Ib=Kb*(V(2)-V(5))*1000;
+string=strcat("@Ib","\t&\t",num2str(Ib,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
 IVs=IR1;
-string=strcat("@IVs","\t&\t",num2str(IVs,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+string=strcat("@IVs","\t&\t",num2str(IVs,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
 
 IVd=IR7;
-string=strcat("@IVd","\t&\t",num2str(IVd,'%.6f'),"\\","\\"," \\hline");
-disp(string);
+string=strcat("@IVd","\t&\t",num2str(IVd,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_node_analysis,string);
+
+fclose(f_node_analysis);
+
+f_req=fopen('req_del.tex', 'w');
+
+B=[0;0;0;0;0;-1;0;1];
+
+D=A\B;
+
+Req=D(6)-D(8);
+
+string=strcat("Vx","\t&\t",num2str(D(6)-D(8),'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_req,string);
+string=strcat("Ix","\t&\t",num2str(1,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_req,string);
+string=strcat("Req","\t&\t",num2str(Req,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(f_req,string);
+
+fclose(f_req);
+
+%Time Constant (T=1/(RC))
+K = (Req*C);
+
+t=[0:0.00005:0.02];
+
+nat_sol=V(8)+(V(6)-V(8))*exp(-t/K);
+
+fig=figure();
+plot(t,nat_sol);
+xlabel("t (Time) [s]");
+ylabel("Capacitor Voltage [V]");
+title("Natural Solution");
+grid on;
+print (fig, "natural_solution.eps", "-depsc");
+
+f_forced_nodal= fopen('forced_amplitudes_del.tex','w');
+
+w=2000*pi;
+ 
+Yc=(j*w*C);
+vs=exp(j*(pi/2));
+ 
+A=[[0 0 0 1 0 0 0 0];[1 0 0 -1 0 0 0 0];[0 0 0 -Kd*G6 1 0 Kd*G6 -1];
+    [G1 -G1-G2-G3 G2 0 G3 0 0 0];[0 G2+Kb -G2 0 -Kb 0 0 0];
+    [0 -Kb 0 0 G5+Kb -G5-Yc 0 Yc];[0 0 0 G6 0 0 -G6-G7 G7];
+    [0 G3 0 G4 -G3-G4-G5 G5+Yc G7 -G7-Yc]];
+    
+B=[0;vs;0;0;0;0;0;0];
+ 
+F=A\B;
+
+for n=1:size(F,1)
+  string=strcat("V",num2str(n),"\t&\t",num2str(abs(F(n,1)),'%.6f'),'\\','\\','\\',"hline\n");
+  fprintf(f_forced_nodal,string);
+end
+
+fclose(f_forced_nodal);
+

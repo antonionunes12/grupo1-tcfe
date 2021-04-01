@@ -9,7 +9,7 @@ LODFIGS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 all: $(FILE).pdf
 	evince $< &
 
-$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) pythonscript concat_files octave_req_calc.log octave_nat_sol.log octave_rc_node_analysis.log ngspice
+$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) pythonscript concat_files octave_rc.log ngspice
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 	
@@ -22,19 +22,11 @@ concat_files: pythonscript
 	sed -i '1,14d' ../mat/rc_circuit.m
 	cat data.txt ../mat/rc_circuit.m > rc_circuit_copy.m
 	cp -f rc_circuit_copy.m ../mat/rc_circuit.m
-	sed -i '1,14d' ../mat/req_calculator_l2.m
-	cat data.txt ../mat/req_calculator_l2.m > req_calculator_l2_copy.m
-	cp -f req_calculator_l2_copy.m ../mat/req_calculator_l2.m
 	@rm -rf *_copy.m
 	
-octave_rc_node_analysis.log:
-	octave ../mat/rc_circuit.m > rc_node_analysis.tex
+octave_rc.log:
+	octave ../mat/rc_circuit.m
 
-octave_nat_sol.log:
-	octave ../mat/natural_solution.m
-	
-octave_req_calc.log:
-	octave ../mat/req_calculator_l2.m > req_calculator_l2.tex
 
 ngspice: ngspice.log
 	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))
@@ -54,7 +46,7 @@ ngspice.log: ../sim/circuitoL1.net
 clean:
 	@rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof
 	@rm -rf *.log *.lot *.nlo *.nls *.out *.toc *~ *.*% ./*.pdf ./*.ps
-	@rm -rf *_tab.tex octave-workspace *.eps *req_calculator_l2.tex *rc_node_analysis.tex
+	@rm -rf *_tab.tex octave-workspace *.eps *_del.tex
 	@rm -rf *_mesh.tex *_node.tex *.txt *_delete.m
 
 .PHONY: all clean ngspice octave

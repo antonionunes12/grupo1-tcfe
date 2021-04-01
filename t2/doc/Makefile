@@ -54,7 +54,7 @@ ngspice.log: ../sim/circuitoL1.net
 clean:
 	@rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof
 	@rm -rf *.log *.lot *.nlo *.nls *.out *.toc *~ *.*% ./*.pdf ./*.ps
-	@rm -rf *_tab.tex octave-workspace *.eps
+	@rm -rf *_tab.tex octave-workspace *.eps *req_calculator_l2.tex *rc_node_analysis.tex
 	@rm -rf *_mesh.tex *_node.tex *.txt *_delete.m
 
 .PHONY: all clean ngspice octave

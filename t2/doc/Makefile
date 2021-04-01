@@ -9,7 +9,7 @@ LODFIGS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 all: $(FILE).pdf
 	evince $< &
 
-$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) pythonscript concat_files octave_mesh.log octave_node.log ngspice
+$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) pythonscript concat_files octave_req_calc.log octave_nat_sol.log octave_rc_node_analysis.log ngspice
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 	
@@ -22,13 +22,19 @@ concat_files: pythonscript
 	sed -i '1,14d' ../mat/rc_circuit.m
 	cat data.txt ../mat/rc_circuit.m > rc_circuit_copy.m
 	cp -f rc_circuit_copy.m ../mat/rc_circuit.m
+	sed -i '1,14d' ../mat/req_calculator_l2.m
+	cat data.txt ../mat/req_calculator_l2.m > req_calculator_l2_copy.m
+	cp -f req_calculator_l2_copy.m ../mat/req_calculator_l2.m
 	@rm -rf *_copy.m
-
-octave_mesh.log:
-	octave ../mat/mesh_analysis_l1.m > octave_mesh.tex
 	
-octave_node.log:
-	octave ../mat/node_analysis_l1.m > octave_node.tex
+octave_rc_node_analysis.log:
+	octave ../mat/rc_circuit.m > rc_node_analysis.tex
+
+octave_nat_sol.log:
+	octave ../mat/natural_solution.m
+	
+octave_req_calc.log:
+	octave ../mat/req_calculator_l2.m > req_calculator_l2.tex
 
 ngspice: ngspice.log
 	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))

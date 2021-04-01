@@ -9,5 +9,10 @@ t=[0:0.00005:0.02];
 
 nat_sol=Vx*exp(-t/K);
 
-plot(t,nat_sol), xlabel("t (Time) [s]"), ylabel("Capacitor Voltage [V]"), 
-                 title("Natural Solution"), grid on
+fig=figure();
+plot(t,nat_sol);
+xlabel("t (Time) [s]");
+ylabel("Capacitor Voltage [V]");
+title("Natural Solution");
+grid on;
+print (fig, "natural_solution.eps", "-depsc");

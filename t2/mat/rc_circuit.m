@@ -154,17 +154,59 @@ v6fn=abs(F(6))*sin(w*t-arg(F(6)))+nat_sol;
 u=[-0.005: 0.00005:0];
 plot(t,v6fn, 'color', 'red');
 hold on;
-plot(u,V(6), 'color', 'red');
-hold on;
 plot(u,Vs, 'color', 'blue');
+hold on;
+plot(u,V(6), 'color', 'red');
 hold on;
 plot(t,sin(w*t), 'color', 'blue');
 hold off;
 xlabel("t (Time) [s]");
-ylabel("Voltage at V6 [V]");
+ylabel("Voltage [V]");
 title("Natural & Forced Solutions Superimposed");
 grid on;
+legend('V6','Vs');
+
 print (fig2, "nat_for_solution.eps", "-depsc");
 
 vcfn=v6fn-abs(F(8))*sin(w*t-arg(F(8)));
+
+
+%|-----------------------------------||-----------------------------------|%
+
+%Gain (w=2000pi)
+Gw = 1 ./ (1+j*((2000*pi)*Req*C)); %Complex Gain (w=2000pi)
+
+Vout = F(6)-F(8); % Phasor Vout (w=2000pi)
+
+Vin = Vout ./ Gw; % Phasor Vin (w=2000pi)
+
+%Vc and V6
+
+f=logspace(-1,6);
+
+
+G = 1 ./ (1+j*(2*pi*f)*Req*C); % Gain Modulus
+
+Vc = G*Vin; %Vc = GAIN *VIN
+
+V8 = F(8); % Phasor V8
+
+V6 = Vc + V8;
+
+fig3=figure();
+
+semilogx(f, 20*log10(abs(Vc))),
+hold on,
+semilogx(f, 20*log10(abs(V6))),
+hold on,
+semilogx(f, 20*log10(1+0*f)),
+hold off,
+xlabel("Frequency [MHz]");
+ylabel("Voltage [dB]");
+title("Frequency Response Analysis");
+grid on;
+legend('Vc','V6','Vs');
+
+print (fig3, "freq_analysis.eps", "-depsc");
+
 

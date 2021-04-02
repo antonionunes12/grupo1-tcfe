@@ -116,12 +116,12 @@ K = (Req*C);
 
 t=[0:0.00005:0.02];
 
-nat_sol=V(8)+(V(6)-V(8))*exp(-t/K);
+nat_sol=(V(6)-V(8))*exp(-t/K);
 
 fig=figure();
-plot(t,nat_sol);
+plot(t,nat_sol, 'color', 'red');
 xlabel("t (Time) [s]");
-ylabel("Capacitor Voltage [V]");
+ylabel("Voltage at V6 [V]");
 title("Natural Solution");
 grid on;
 print (fig, "natural_solution.eps", "-depsc");
@@ -131,7 +131,7 @@ f_forced_nodal= fopen('forced_amplitudes_del.tex','w');
 w=2000*pi;
  
 Yc=(j*w*C);
-vs=exp(j*(pi/2));
+vs=1;
  
 A=[[0 0 0 1 0 0 0 0];[1 0 0 -1 0 0 0 0];[0 0 0 -Kd*G6 1 0 Kd*G6 -1];
     [G1 -G1-G2-G3 G2 0 G3 0 0 0];[0 G2+Kb -G2 0 -Kb 0 0 0];
@@ -141,11 +141,30 @@ A=[[0 0 0 1 0 0 0 0];[1 0 0 -1 0 0 0 0];[0 0 0 -Kd*G6 1 0 Kd*G6 -1];
 B=[0;vs;0;0;0;0;0;0];
  
 F=A\B;
-
 for n=1:size(F,1)
   string=strcat("V",num2str(n),"\t&\t",num2str(abs(F(n,1)),'%.6f'),'\\','\\','\\',"hline\n");
   fprintf(f_forced_nodal,string);
 end
 
 fclose(f_forced_nodal);
+
+fig2=figure();
+v6fn=abs(F(6))*sin(w*t-arg(F(6)))+nat_sol;
+
+u=[-0.005: 0.00005:0];
+plot(t,v6fn, 'color', 'red');
+hold on;
+plot(u,V(6), 'color', 'red');
+hold on;
+plot(u,Vs, 'color', 'blue');
+hold on;
+plot(t,sin(w*t), 'color', 'blue');
+hold off;
+xlabel("t (Time) [s]");
+ylabel("Voltage at V6 [V]");
+title("Natural & Forced Solutions Superimposed");
+grid on;
+print (fig2, "nat_for_solution.eps", "-depsc");
+
+vcfn=v6fn-abs(F(8))*sin(w*t-arg(F(8)));
 

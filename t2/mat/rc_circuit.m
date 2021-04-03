@@ -126,6 +126,8 @@ title("Natural Solution");
 grid on;
 print (fig, "natural_solution.eps", "-depsc");
 
+%|---------------------------|Forced Node Analysis|---------------------------|%
+
 f_forced_nodal= fopen('forced_amplitudes_del.tex','w');
 
 w=2000*pi;
@@ -148,12 +150,18 @@ end
 
 fclose(f_forced_nodal);
 
-
 fig2=figure();
-v6fn=abs(F(6))*sin(w*t-arg(F(6)))+nat_sol;
-v8fn=abs(F(8))*sin(w*t-arg(F(8)));
-vcfn=v6fn-v8fn;
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% CORRIGIR VCFN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%VC = [V0-Vinf](exp(-t/k))+Vinf.
+
+%vcfn=nat_sol + (abs(F(6))*sin(w*t+arg(F(6)))-abs(F(8))*sin(w*t+arg(F(8)))).*(1-exp(-t/K));
+vcfn = nat_sol + imag(F(6)-F(8))*exp(j*w*t).*(1-exp(-t/K));
+
+%v8fn=abs(F(8))*sin(w*t+arg(F(8)));
+v8fn = imag(F(8)*exp(j*w*t));
+
+v6fn=vcfn+v8fn;
+
 
 u=[-0.005: 0.00005:0];
 plot(t,v6fn, 'color', 'red');
@@ -177,7 +185,7 @@ print (fig2, "nat_for_solution.eps", "-depsc");
 
 
 
-%|-----------------------------------||-----------------------------------|%
+%|-----------------------|Amplitude Frequency Analysis|-----------------------|%
 
 %Gain (w=2000pi)
 Gw = 1 ./ (1+j*((2000*pi)*Req*C)); %Complex Gain (w=2000pi)
@@ -215,4 +223,26 @@ legend('Vc','V6','Vs');
 
 print (fig3, "freq_analysis.eps", "-depsc");
 
+%|------------------------------|Phase Analysis|------------------------------|%
 
+f=logspace(-1,6);
+
+PVc=180/pi * arg(Vc);
+
+PV6=180/pi * arg(V6);
+
+fig4=figure();
+
+semilogx(f, PVc, 'color', [0.9290 0.6940 0.1250], 'linewidth', 1.5);
+hold on;
+semilogx(f, PV6, 'color', 'red');
+hold on;
+semilogx(f, 0*f, 'color', 'blue');
+hold off;
+xlabel("Frequency [MHz]");
+ylabel("Phase [ºDegrees]");
+title("Phase Response Analysis");
+grid on;
+legend('Phase Vc','Phase V6','Phase Vs');
+
+print (fig3, "freq_analysis.eps", "-depsc");

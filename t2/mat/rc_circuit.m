@@ -148,27 +148,33 @@ end
 
 fclose(f_forced_nodal);
 
+
 fig2=figure();
 v6fn=abs(F(6))*sin(w*t-arg(F(6)))+nat_sol;
+v8fn=abs(F(8))*sin(w*t-arg(F(8)));
+vcfn=v6fn-v8fn;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% CORRIGIR VCFN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 u=[-0.005: 0.00005:0];
 plot(t,v6fn, 'color', 'red');
 hold on;
-plot(u,Vs, 'color', 'blue');
-hold on;
-plot(u,V(6), 'color', 'red');
-hold on;
 plot(t,sin(w*t), 'color', 'blue');
+hold on;
+plot(t,vcfn, 'color', [0.9290 0.6940 0.1250], 'linewidth', 1.5);
+hold on;
+plot(u,V(6)+0*u, 'color', 'red');
+hold on;
+plot(u,Vs+0*u, 'color', 'blue');
+hold on;
+plot(u,V(6)-V(8)+0*u,'color', [0.9290 0.6940 0.1250], 'linewidth', 1.5);
 hold off;
 xlabel("t (Time) [s]");
 ylabel("Voltage [V]");
 title("Natural & Forced Solutions Superimposed");
 grid on;
-legend('V6','Vs');
-
+legend('V6','Vs', 'Vc');
 print (fig2, "nat_for_solution.eps", "-depsc");
 
-vcfn=v6fn-abs(F(8))*sin(w*t-arg(F(8)));
 
 
 %|-----------------------------------||-----------------------------------|%
@@ -195,12 +201,12 @@ V6 = Vc + V8;
 
 fig3=figure();
 
-semilogx(f, 20*log10(abs(Vc))),
-hold on,
-semilogx(f, 20*log10(abs(V6))),
-hold on,
-semilogx(f, 20*log10(1+0*f)),
-hold off,
+semilogx(f, 20*log10(abs(Vc)), 'color', [0.9290 0.6940 0.1250], 'linewidth', 1.5);
+hold on;
+semilogx(f, 20*log10(abs(V6)), 'color', 'red');
+hold on;
+semilogx(f, 20*log10(1+0*f), 'color', 'blue');
+hold off;
 xlabel("Frequency [MHz]");
 ylabel("Voltage [dB]");
 title("Frequency Response Analysis");

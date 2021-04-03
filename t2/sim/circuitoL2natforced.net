@@ -1,8 +1,5 @@
 Circuito L2 Nat Forced
-*
-* NGSPICE simulation script
-* Linear Circuit Analysis
-*
+
 
 .options savecurrents
 
@@ -44,16 +41,12 @@ set color4=violet
 set color5=rgb:3/8/0
 set color6=rgb:4/0/0
 
-op
-
 echo "********************************************"
-echo  "Operating point"
+echo  "Transient analysis"
 echo "********************************************"
-
-echo "op_TAB"
 run
 tran 1u 20m 0 uic
-echo "op_END"
+
 hardcopy spicenatforced.ps v(6) v(1) v(6)-v(8)
 
 echo "********************************************"

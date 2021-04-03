@@ -1,8 +1,4 @@
 Circuito L2 Init
-*
-* NGSPICE simulation script
-* Linear Circuit Analysis
-*
 
 .options savecurrents
 

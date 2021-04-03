@@ -1,8 +1,5 @@
 Circuito L2vs0
-*
-* NGSPICE simulation script
-* Linear Circuit Analysis
-*
+
 
 .options savecurrents
 

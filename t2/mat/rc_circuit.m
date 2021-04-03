@@ -215,7 +215,7 @@ semilogx(f, 20*log10(abs(V6)), 'color', 'red');
 hold on;
 semilogx(f, 20*log10(1+0*f), 'color', 'blue');
 hold off;
-xlabel("Frequency [MHz]");
+xlabel("Frequency [Hz]");
 ylabel("Voltage [dB]");
 title("Frequency Response Analysis");
 grid on;
@@ -239,10 +239,17 @@ semilogx(f, PV6, 'color', 'red');
 hold on;
 semilogx(f, 0*f, 'color', 'blue');
 hold off;
-xlabel("Frequency [MHz]");
-ylabel("Phase [ºDegrees]");
+xlabel("Frequency [Hz]");
+ylabel("Phase [Degrees]");
 title("Phase Response Analysis");
 grid on;
 legend('Phase Vc','Phase V6','Phase Vs');
 
-print (fig3, "freq_analysis.eps", "-depsc");
+print (fig4, "phase_analysis.eps", "-depsc");
+
+addpath("../mat");
+
+cria_spice(1, R1,R2,R3,R4,R5,R6,R7,Vs,C,Kb,Kd, V(6)-V(8));
+cria_spice(2, R1,R2,R3,R4,R5,R6,R7,Vs,C,Kb,Kd, V(6)-V(8));
+cria_spice(3, R1,R2,R3,R4,R5,R6,R7,Vs,C,Kb,Kd, V(6)-V(8));
+cria_spice(4, R1,R2,R3,R4,R5,R6,R7,Vs,C,Kb,Kd, V(6)-V(8));

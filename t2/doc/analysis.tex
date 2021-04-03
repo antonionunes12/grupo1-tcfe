@@ -1,33 +1,36 @@
-\section{Theoretical Analysis}
+\section{Theoretical and Simulation Analysis}
 \label{sec:analysis}
 
-In this section, the circuit shown in Figure~\ref{fig:circuitol1} is analysed
-theoretically using two methods: Nodal and Mesh Analysis.
+In order to compare \textit{side by side}, we'll discuss the theoretical and simulation analysis at the same time.
 
-\subsection{Nodal Analysis} 
-\label{subsec:node_analysis} 
+\subsection{Stationary Analysis}
+\label{subsec:stat}
 
-Before applying the method, it is important to discuss how it works. In general, it consists of discovering the voltages associated with each node of the circuit - they are the unknown variables in our equations. To obtain those, one has to apply \textit{Kirchhoff}'s Current Law (KCL) to the nodes, always having in mind that nodes on the ends of branches containing  Voltage Sources cannot be analysed in this way.
+For $t<0$, we have a stationary \textit{regime} which means that $v_i$ and $i_i$ are constants. In this case, as $i_c=C\frac{dv_c}{dt}$, we end up with $i_c$ to be zero, \textit{i.e.} an Open Circuit (OC).
 
-In order to obtain a fully determined system of equations, we might need additional equations, \textit{i.e.} equations derived from the circuit by inspecting. If we apply this method to the circuit in question, we end with 4 node equations, 1 supernode equation and 3 additional equations. 
+The nodes are identified in the figure below. We considered $V_4$ to be the Ground Node.
 
-\begin{figure}[h] \centering
-\includegraphics[width=0.5\linewidth]{nodal_analysis.pdf}
-\caption{Node Numbering}
-\label{fig:node_numbering}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{circuitol2_node.pdf}
+    \caption{RC Circuit with Node Identification}
+    \label{fig:theorical_nodal_analysis}
 \end{figure}
 
-The resultant system of equations, in the matrix and symbolic form is,\\
-\begin{equation}
+We hence have, after computing Nodal Analysis, 
+
+\begin{equation} \nonumber
 \label{eq:node}
+\centering
 \begin{bmatrix}
-1 & 0 & 0 & 0 & 0 & 0 & 0 \\
-0 & 0 & 0  & 1 & 0 & K_cG_6 & -1 \\
-G_1 & -(G_1+G_2+G_3) & G_2 & G_3 & 0 & 0 & 0  \\
-0 & K_b+G_2 & -G_2 & -K_b & 0 & 0 & 0 \\
-0 & -G_2 & G_2 & -G_5 & G_5 & 0 & 0 \\
-0 & 0 & 0 & 0 & 0 & G_6+G_7 & G_7 \\
-0 & G_3 & 0 & -(G_3+G_4+G_5) & G_5 & G_7 & -G_7
+0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & -1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & -K_dG_6 & 1 & 0 & K_dG_6 & -1\\
+G_1 & -(G_1+G_2+G_3) & G_2 & 0 & G_3 & 0 & 0 & 0  \\
+0 & K_b+G_2 & -G_2 & 0 & -K_b & 0 & 0 & 0 \\
+0 & -K_b & 0 & 0 & G_5+K_b & -G_5 & 0 & 0 \\
+0 & 0 & 0 & G_6 & 0 & -G_6-G_7 & G_7 & 0 \\
+0 & G_3 & 0 & G4 & -(G_3+G_4+G_5) & G_5 & G_7 & -G_7
 \end{bmatrix}
 \begin{bmatrix}
 V_1 \\
@@ -36,196 +39,280 @@ V_3 \\
 V_4 \\
 V_5 \\
 V_6 \\
-V_7 
+V_7 \\
+V_8 \\
 \end{bmatrix}
 =
 \begin{bmatrix}
-V_a \\
 0 \\
+V_s \\
 0 \\
 0 \\ 
-I_d \\
 0 \\
-I_d 
-\end{bmatrix}
-\end{equation}
-
-Where $G_i\equiv $ conductance of the $i^{th}$ resistor.
-
-\vspace{0.75cm}
-
-Since, for the Node Analysis method, the voltages used refer to the different nodes, we are free to set a reference point in whatever node we desire. Note that this has no real impact on the voltage drops on each component, since those are calculated by taking the difference of the nodal voltages on each of the component's ends. Doing so, we should clarify that the voltage associated with the relative Ground (GND), $V_0$, was omitted from the matrix because it leads to a trivial relation: 
-
-\begin{equation}
-  V_0 = 0  
-\end{equation}
-
-\noindent which can be directly substituted on the remaining equations. We could do the same for $V_1$ but it feels unnecessary and would be making the other equations harder to decipher. That said, you can clearly see from the first line of the matrix that $V_1$ is directly associated with $V_a$:
-
-\begin{equation}
-    V_1 = V_a     
-\end{equation}
-
-\noindent An adittional equation comes from
-\begin{equation}
-    V_c = V_4 - V_7 = K_cI_c = K_c(-V_6)G_6 \implies V_4+V_6(K_cG_6)-V_7=0
-\end{equation}
-which corresponds to the second line of the matrix in \ref{eq:node}.
-
-The following 4 equations come from nodes 2, 3, 5, 6, respectively applying the linear relations described.
-The last equation is obtained from «merging» nodes 4 and 7, and comparing the currents that enter and exit this «supernode» \footnote{Note that this is possible due to the linear properties of KCL}.
-
-\subsection{Mesh Analysis}
-\label{subsec:mesh_analysis}
-
-In this second method, instead of looking for nodes, we are interested in meshes (as the method's name indicates).
-
-Usually, we create \textit{fictitious} currents in each mesh and we then apply \textit{Kirchhoff}'s Voltage Law (KVL) to either the individual meshes, or to a loop. 
-This difference occurs because sometimes, analogously to the previous method, we are unable to provide an equation for a given mesh, specially if there are Current Sources involved. 
-
-In that case, one has to look for additional equations by, for example, attributing the values of known currents to \textit{fictitious} ones. Another option is to analyse supermeshes, \textit{i.e.} non-elementary loops, that avoid these components.
-
-For the analysis in questions, we make use of 2 meshes, 0 supermeshes and 2 additional equations.
-
-
-\begin{figure}[h] \centering
-\includegraphics[width=0.5\linewidth]{mesh_currents.pdf}
-\caption{Mesh Numbering}
-\label{fig:mesh_numbering}
-\end{figure}
-\vspace{3cm}
-\pagebreak
-
-Just with a glance we can realise that the equations provide a much smaller matrix, when compared to the previous one. This is expected since there is a greater number of nodes when compared to meshes (this phenomena is detailed in Section \ref{subsec:relation_mesh_node}),
-
-\begin{equation}
-\label{eq_mesh}
-\begin{bmatrix}
-R_1+R_3+R_4 & R_3 & R_4 \\
--K_bR_3 & 1-K_bR_3 & 0 \\
-R_4 & 0 & (R_4+R_6+R_7-K_c)
-\end{bmatrix}
-\begin{bmatrix}
-I_{M_1}\\
-I_{M_2} \\
-I_{M_3}
-\end{bmatrix}
-=
-\begin{bmatrix}
-V_a \\
+0 \\
 0 \\
 0
 \end{bmatrix}
 \end{equation}
 
+\clearpage
 
-where $I_{M_i}\equiv$ the \textit{fictitious} current on mesh $M_i$.
+Regarding the computer-aided analysis (and remembering the already discussed, in the previous laboratory, \textit{technique} of the addition of a \textit{dummy} 0V-voltage source), we also have results, presented below:
 
-Above, we present a $3X3$ matrix, although it is simple to observe that the circuit has 4 meshes. We obviously omitted one \textit{fictitious current} because it is trivial to conclude by inspection that the current that flows through Mesh $4$ is actually the current from the current source $I_d$. So, the fourth equation would be:
-
-\begin{equation}
-    I_{M_4}=I_d
-\end{equation}
-
-From applying KVL to meshes M1 and M3 one can easily define the first and third equations in matrix \ref{eq_mesh}, respectively.
-
-The second matrix equation comes from inspecting directly mesh M2. 
-\begin{equation}
-    I_{M_2}= I_b = K_bV_b = K_b(I_{M_1}+I_{M_2})R_3 \implies K_bR_3I_{M_1} + (K_bR_3-1) I_{M_2} = 0
-\end{equation}
-
-\pagebreak
-\subsection{Relationship between both methods}
-\label{subsec:relation_mesh_node}
-
-We should note that, while the methods used clearly differ in the way they're applied, they are, obviously, intimately connected and the results given by one can be derived from the other's.
-
-For example, given the voltage values on each node from the Node Analysis, we can easily compute the voltage drops on each of the resistors and by applying \textit{Ohm}'s law, get the values of the current flowing through them.
-On the other hand, given the current values calculated with the use of the Mesh Analysis method, we can do the opposite to get the nodal voltages. An example is given in Section \ref{subsec:results}.
-
-Since, for the voltage drops in each component, you need 2 values (one for each of the nodal voltages) it is easy to see that you'll quite surely end up with more equations, and thus a bigger matrix to solve, when doing a Nodal Analysis. However, as will be explained in greater detail in Section \ref{subsec_mna}, a similar method is implemented by circuit solvers like \textit{Ngspice}.
-
-\subsection{Modified Nodal Analysis (MNA)}
-\label{subsec_mna}
-
-One can see that it is trivial to find the meshes in a plane circuit. When it comes to the nodes, there can be an increment of complexity, even though it still doesn't offer much difficulty for humans.
-
-However, \textit{Ngspice}, and in general the majority of circuit simulators, prefers to analyse nodes rather than meshes. This occurs mainly for one reason. In a topological point of view, it is easier for machines and programs to identify nodes. The latter requires a level of processing higher than the first, which makes it a worse choice in most cases, increasing the complexity of tasks a computer needs to execute, and consequently the amount of processing time.
-
-In spite of that, the choice of nodal analysis might bring problems as we saw previously, regarding the existence of Voltage Sources. Hence, the software adapts the nodal analysis by having a systematical method, in order to perform under any kind of circuit, what we call the \textit{Modified Nodal Analysis}, or simply MNA.
- 
-It may be relevant to discuss briefly this method as it generated the results seen in Table \ref{tab:op}. \par
-Since in Nodal Analysis one cannot write equations for nodes connected to Voltage Sources using KCL, in MNA\footnote{Procedure seen in https://www.swarthmore.edu/NatSci/echeeve1/Ref/mna/MNA2.html, accessed on March 20th 2021} we assign an unknown current to a voltage source, hence creating new unknowns. We also relate the voltage drop between nodes and voltage source imposed.  We later apply KCL to all the nodes and solve the system. Some benefits to this method are that the computer doesn't need to compute any supernodes and in the final matrix we have results regarding both voltages and currents.
-
-
-\pagebreak
-\subsection{Results}
-\label{subsec:results}
-
-In this last section we will discuss the results that the methods studied provided. The resolution of the equations on the matrix-form was done with the help of \textit{Octave}. 
-
-
-The data used for solving the circuit was generated with the provided \textit{Python} script, using the student number $95770$, and can be found in the table below:
 \begin{table}[h]
-\parbox{.36\linewidth}{
+\parbox{.5\linewidth}{
   \centering
   \begin{tabular}{|c|c|}
     \hline
-
-    {\bf Name} & {\bf Value [Units]} \\ \hline
-    R1 & 1.03504497262 [$k\Omega$]\\ \hline
-    R2 & 2.01159104669 [$k\Omega$]\\ \hline
-    R3 & 3.03557466091 [$k\Omega$]\\ \hline
-    R4 & 4.10235086526 [$k\Omega$]\\ \hline
-    R5 & 3.09889833746 [$k\Omega$]\\ \hline
-    R6 & 2.00952426524 [$k\Omega$]\\ \hline
-    R7 & 1.04158528578 [$k\Omega$]\\ \hline
-    Va & 5.22552047598 [$V$]\\ \hline
-    Kb & 7.3172497028 [$mS$]\\ \hline
-    Kc & 8.09359354837 [$k\Omega$]\\ \hline
-    Id & 1.04791133328 [$mA$]\\ \hline
-    
+    {\bf Name} & {\bf Value [$mA$ or $V$]} \\\hline
+    \input{node_analysis_init_del.tex}
   \end{tabular}
-  \caption[Data used]{Data used}
-  \label{tab:data}
+  \caption{Theoretical Results for $t<0$}
+  \label{tab:node_voltages}
   }
   \hfill
-  \parbox{.25\textwidth}{
+  \parbox{.5\textwidth}{
   \centering  
   \begin{tabular}{|c|c|}
     \hline    
-    {\bf Name} & {\bf Value [$V$]} \\ \hline
-    \input{octave_node.tex}
+    {\bf Name} & {\bf Value [$A$ or $V$]} \\ \hline
+    \input{op_tab.tex}
   \end{tabular}
-  \caption[Results using Nodal Analysis]{Results using Nodal Analysis}
+  \caption{Simulated Results for $t<0$}
   \label{tab:nodal}
   }
-  \hfill
-  \parbox{0.25\textwidth}{
-  \centering
-  \begin{tabular}{|c|c|}
-    \hline    
-    {\bf Name} & {\bf Value [$mA$]} \\ \hline
-    \input{octave_mesh.tex}
+  \end{table}
+
+We can see that, as expected, all results are equal.
+
+The important result derived from this subsection is the voltage drop $V_6-V_8$, which we'll impose later on as an Initial Condition (IC).
+
+\subsection{Equivalent Resistance}
+\label{subsec:Req}
+
+In this case we applied \textit{Thévenin's} Equivalent Method to discover $R_{eq}$ as seen from the capacitor. As we have Dependent Sources, it is not enough just to \textit{shut down} Independent Sources. 
+
+In fact, one has to add, either an Independent Voltage Source or an Independent Current Source to the terminals of the OC.
+
+We chose an Independent Current Source applying a current of $1 A$ to easen the derivation (as $R_{eq}=V_x/I_x$). 
+
+After running Nodal Analysis we arrive at the theoretical results expressed in Tables \ref{tab:req1}: 
+
+
+\begin{table}
+\centering
+ \begin{tabular}{|c|c|}
+    \hline
+    {\bf Name} & {\bf Value [$V$, $A$ and $\Omega$]} \\\hline
+    \input{req_del.tex}
   \end{tabular}
-  \caption[Results using Mesh Analysis]{Results using Mesh Analysis}
-  \label{tab:mesh}
-  }
+
+  \caption[Equivalent Resitance]{Equivalent Resistance}  
+  \label{tab:req1}
+\end{table}
+\pagebreak
+\subsection{Natural Solution}
+
+Using the results from the equivalent resistance calculated on Section \ref{subsec:Req} we can plot the natural solution of the voltage at V6 using the equivalent RC circuit, by doing:
+
+\begin{equation}
+    v_{Cn}=[V_0-V_{\infty}]e^{-(t-t_0)/\tau} + V_{\infty} \nonumber
+\end{equation}
+We know that $V_0=V_{6_0}-V_{8_0}$ and that $V_{\infty} = 0$: The final \textit{regime} is stationary, implying that, $\frac{dv}{dt} = 0$  for the natural solution. By the capacitor equation $i_c=C\frac{dv}{dt}=0$, which means that no current passes through the capacitor nor the resistor. By Ohm's Law , one must conclude that $V_{\infty}=0$. Since that by each node and simulation analysis, $V_{8n}=0$, :
+
+\begin{equation}
+    v_{6n} = v_{Cn}+v_{8n} = (V_{6_0}-V_{8_0})e^{-t/\tau} \nonumber
+\end{equation}
+
+Where $\tau= R_{eq}C$, represents the relaxation time.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|}
+    \hline
+    {\bf Name} & {\bf Value [$A$ or $V$]} \\ \hline
+    \input{op_tab2.tex}
+    \end{tabular}
+    \caption{Simulation Results for Natural Solution Determination}
+    \label{tab:ngspice1}
 \end{table}
 
-For the Nodal Analysis (see subsection \ref{subsec:node_analysis}) it is pertinent to address that the solution is a matrix with an incredible amount of terms, so it would be almost impossible, if not painful, to insert the symbolic solution in the present document. The solutions, after substituting the values of the resistances and other constants (from Table \ref{tab:data}) are presented in Table \ref{tab:nodal}.
+The table shown above presents the values that are going to be used from now on regarding the ICs for the simulation analysis, and were generated using the professor's suggestion.
 
-Analogously, for the Mesh Analysis (see Subsection \ref{subsec:mesh_analysis}) the results are shown in Table \ref{tab:mesh}.
+This step was imperative in order to determine the ICs regarding the transient analysis that will follow and also to calculate $R_{eq}$, which is useful to compare the natural solution analysis between both methods. The result for $R_{eq}$, which can be calculated by doing $\frac{v(6)}{|@r5[i]|}$, is equal to the one obtained in the theoretical analysis, as shown previously.
 
-As stated in Section \ref{subsec:relation_mesh_node}, one can verify the equivalence of both methods, with the use of \textit{Ohm}'s Law, calculating the current flowing through the resistors using the voltage drop from two consecutive nodes, from the Nodal Analysis, or doing the reciprocal: to derive the nodal voltages using the current from the Mesh Analysis.
-Here's an example of the equivalence cited using Ohm's Law:
+It is important to note that the value of v(6) given by the table is the subtraction of the values of v(6) and v(8) from table \ref{tab:nodal}.\\
 
-\begin{align}
-    0.2362 [V] = V_1-V_2 = R_1I_{M_1} 
-    \Longleftrightarrow I_{M_1} = \frac{V_1-V_2}{R_1} = 0.2282 [mA]  
-\end{align}
-Bearing that $V_1-V_2$ is the voltage drop between $R_1$.
+We can see, by comparing the plots below (Figures \ref{fig:sub1} and \ref{fig:sub2}), that we achieved really satisfactory results. From a mere comparison of the figures, we can see that both have the same \textbf{shape} (negative exponential), they start at the \textbf{same voltage} and they almost touch zero, with a naked eye approach, at the \textbf{same time} ($\tau$ is equal in both graphs).
 
-Doing the same for the rest of the components proves, somewhat, that both analysis lead to the same results. Moreover, we should compare them to the real results obtained from the simulation that we're about to explore in Section \ref{sec:simulation}. This comparison can be found in the conclusion (Section \ref{sec:conclusion}).
+With a greater detail, one can compare the values of the coordinates of the points on each graphs to see that they match up.
+
+\begin{figure}[h]
+    \centering
+  \includegraphics[scale=0.5]{natural_solution.eps}
+  \caption{Theoretical Natural Solution}
+  \label{fig:sub1}
+\end{figure}
+\begin{figure}[h]
+    \centering
+  \includegraphics[scale=0.45]{spicenat.pdf}
+  \caption{Simulation Natural Solution}
+  \label{fig:sub2}
+\end{figure}
+
+\clearpage
+
+\subsection{Superimposed Natural and Forced Solutions}
+\label{subsec:general_exp}
+
+In a theoretical approach, we'll procede the analysis using the concept of phasors and its Nodal Analysis.
+We are now dealing with complex voltages of the form $\Tilde{V_i}=V_ie^{j(\omega t - {\phi}_i)}$, where $V_i\equiv$ amplitude, $j\equiv$ imaginary quantity, $\omega\equiv$ angular frequency and ${\phi}_i\equiv$ phase.\\
+
+One must remember that when we force a sinusoidal signal, the whole circuit will vibrate with the same frequency so, for the node analysis, the part corresponding to the time dependency can be ommited for the sake of simplicity and we can solve the system using phasors of the form $\Tilde{V_i}=V_ie^{-j{\phi}_i}$. Then, the final real solutions can be derived by:
+\begin{equation}
+    V_i=|\Tilde{V_i}| sin(\omega t-{\phi}_i)
+\end{equation}
+
+Once Phasor Node Analysis is apllied to the circuit, one ends up with the following complex matrix system:
+
+\begin{equation} \nonumber
+\label{eq:node}
+\centering
+\begin{bmatrix}
+0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & -1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & -K_dG_6 & 1 & 0 & K_dG_6 & -1\\
+G_1 & -(G_1+G_2+G_3) & G_2 & 0 & G_3 & 0 & 0 & 0  \\
+0 & K_b+G_2 & -G_2 & 0 & -K_b & 0 & 0 & 0 \\
+0 & -K_b & 0 & 0 & G_5+K_b & -G_5-Y_c & 0 & Y_c \\
+0 & 0 & 0 & G_6 & 0 & 0 & -G_6-G_7 & G_7 \\
+0 & -G_3 & 0 & -G4 & G_3+G_4+G_5 & G_5-Y_c & -G_7 & G_7+Y_c
+\end{bmatrix}
+\begin{bmatrix}
+\Tilde{V_1} \\
+\Tilde{V_2} \\
+\Tilde{V_3} \\
+\Tilde{V_4} \\
+\Tilde{V_5} \\
+\Tilde{V_6} \\
+\Tilde{V_7} \\
+\Tilde{V_8} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 \\
+\Tilde{V_s} \\
+0 \\
+0 \\ 
+0 \\
+0 \\
+0 \\
+0
+\end{bmatrix}
+\end{equation}
+
+where $Y_c\equiv j\omega C \equiv$ admittance of a capacitor.\\
+
+Solving the above system gives off the following forced phasor voltages:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|c|}
+    \hline
+    {\bf Name} & {\bf Value [$A$ or $V$]} & {\bf Phase [$Deg$]} \\ \hline
+    \input{forced_amplitudes_del.tex}
+    \end{tabular}
+    \caption{Forced Complex Amplitudes}
+    \label{tab:ngspice1}
+\end{table}
+
+From that, by superimposing the Natural and Forced solution we have the plot \ref{fig:sub1}.
+
+\begin{figure}[h]
+    \centering
+  \includegraphics[scale=0.5]{nat_for_solution.eps}
+  \caption{Theoretical Superimposed Solution}
+  \label{fig:sub1}
+\end{figure}
+
+
+On the \textit{Ngspice} case, we just have to add a sinusoidal voltage source of the form 
+\begin{equation} \nonumber
+ v_s(t)=V_s sin (2\pi f t)   
+\end{equation}
+ where $f=1 kHz$.
+ 
+Applying transient analysis, \textit{Ngspice} plots as seen in figure \ref{fig:sub2}.
+ 
+\begin{figure}[h]
+    \centering
+  \includegraphics[scale=0.5]{spicenatforced.pdf}
+  \caption{Simulation Superimposed Solution}
+  \label{fig:sub2}
+\end{figure}
+
+\clearpage
+
+It is interesting to identify, among other \textit{phenomena}, the fact that, for $t\to\infty$, we have a pure sinusoidal signal on $V_6$ with the same frequency as the imposed one (which was expectable since that the natural solution part of $V_c\to0$ and so, for the amplitudes $V_6 \to V_8$).
+
+Besides, there is no discontinuity on $v_c$, which is expectable since there cannot be a voltage drop change on the capacitor for the same time sequence, bearing that energy stored in this element must be continuous.
+
+If we compare some values of the three voltages examined, one can state that there is an enourmous amount of precision. Also, the phases and starting values are equivalent between both analysis. This leads, as previously achieved, to an excelent similarity using the two different methods.
+
+\subsection{Frequency Response}
+\label{subsec:frequency_response}
+
+In this last subsection, we study the behaviour of $V_c=V_6-V_8$, $V_s$ and $V_6$ in both a theoretical point of view as well as simulation, when the frequency changes. 
+
+Before analysing the plot results, one has to remember that we have a logarithmic scale on the x-axis (frequency) and a decibel scale on the y-axis (amplitude voltage), for convenience.
+
+When it comes to amplitudes the resultant theoretical graph is,
+
+\begin{figure}[h]
+    \centering
+  \includegraphics[scale=0.5]{freq_analysis.eps}
+  \caption{Theoretical Amplitude Response}
+  \label{fig:sub3}
+\end{figure}
+
+Note that since the amplitude of $V_s$ is independent of the frequency, as expected, its value in decibels remains equal to 0.
+Since the RC circuit acts as a low-pass filter\footnote{A low-pass filter allows low frequencies to \textit{pass} while \textit{cutting off} high frequencies} its voltage drop remains almost constant until a certain turning point. This turning point is denominated the cut-off frequency, and in this case its value is: 
+
+\begin{equation}
+f_{CO}=\frac{1}{2\pi R_{eq}C} \nonumber
+\end{equation}
+From this value on, the amplitude of the voltage drop in the capacitor decreases exponentially, denoted by the linear decrease on the logarithmic scale plot.\\
+
+For the \textit{Ngspice} simulation, we do the same kind of analysis, varying the frequency of the AC current source from 0.1Hz to 1MHz, giving off the following results:
+\clearpage
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[scale=0.5]{ampfreqresponse.pdf}
+  \caption{Simulation Amplitude Response}
+  \label{fig:sub4}
+\end{figure}
+
+Once again, the results can be compared to confirm an excellent similarity.
+
+Regarding the phases, we have plotted both analysis displayed in Figures \ref{fig:sub5} and \ref{fig:sub6}. The x-label is a logarithmic scale of the frequency as in the previous plots, but now the y-label is a degree angle scale.  
+
+It is interesting to analyse the variation of phase in both $V_c$ and $V_6$, as the frequency of the input signal increases. For extremely low frequencies, the AC signal is almost DC. The impedance of the capacitor is therefore, tending to infinity, which is equivalent to say, that $V_c$ branch is open-circuted. The expected phase diference between voltages at the capacitor and the voltage source is zero ($\phi_S - \phi_C = 0 $). On the other hand, if we take extremely high frequencies, one should expect the capacitor impedance to go to 0. The branch becomes "short-circuited" and it is expectable that the voltage at the capacitor are completely out of phase, not keeping up with the changes at the voltage source. Bear in mind that because $i = C \frac{dv}{dt}$, if the current through the resistor is extremely high, the change of $V_c$ with respect to time becomes high as well.
+
+For the final two graphs, as observed below, there are no significant differences between the simulation and the theory.
+
+\begin{figure}[h]
+\centering
+  \includegraphics[scale=0.5]{phase_analysis.eps}
+  \caption{Theoretical Phase Response}
+  \label{fig:sub5}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+  \includegraphics[scale=0.5]{phasefreqresponse.pdf}
+  \caption{Simulation Phase Response}
+  \label{fig:sub6}
+\end{figure}
 
 \clearpage

@@ -75,7 +75,7 @@ clean:
 	@rm -rf *.aux *.bbl *.blg *.glg *.glo *.gls *.ilg *.ist *.lof
 	@rm -rf *.log *.lot *.nlo *.nls *.out *.toc *~ *.*% ./*.pdf ./*.ps
 	@rm -rf *_tab.tex octave-workspace *.eps *_del.tex *_tab2.tex
-	@rm -rf *_mesh.tex *_node.tex *.txt *_delete.m *.net
+	@rm -rf *_mesh.tex *_node.tex *.txt *_delete.m *.net *_copy.m
 
 .PHONY: all clean ngspice octave
 

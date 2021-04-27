@@ -1,0 +1,82 @@
+Circuito AC DC L3
+
+.param renvvalue=1k
+.param cenvvalue=15u
+.param rvregvalue=6.3k
+.param ndiodosenv=18
+
+.csparam renvvalue={renvvalue}
+.csparam rvregvalue={rvregvalue}
+.csparam cenvvalue={cenvvalue}
+.csparam ndiodosenv={ndiodosenv}
+
+.options savecurrents
+.MODEL d-default D
+.MODEL n-diodes D (N={ndiodosenv})
+
+*230/16=14.375
+
+
+Vs 1 e 0.0 ac 1.0 sin(0 28.75 50 0 0)
+
+D-env1 1 2 d-default
+D-env2 e 2 d-default
+D-env3 0 e d-default
+D-env4 0 1 d-default
+
+R-env 2 0 {renvvalue}
+
+C-env 2 0 {cenvvalue} ic=0
+
+R-vreg 2 3 {rvregvalue}
+
+D-vreg 3 0 n-diodes
+
+
+.control
+
+set hcopypscolor=0
+set color0=white
+set color1=black
+set color2=red
+set color3=blue
+set color4=violet
+set color5=rgb:3/8/0
+set color6=rgb:4/0/0
+
+run
+tran 1u 200m 0 uic
+
+hardcopy exp_results.ps v(3) v(2) v(1)-v(e)
+
+run
+tran 1u 600m 400m uic
+hardcopy exp_ripple.ps v(3)-12
+
+meas tran maximo MAX v(3) from=400m to=600m
+meas tran minimo MIN v(3) from=400m to=600m
+meas tran media AVG v(3) from=400m to=600m
+
+echo "**************"
+echo "ripple_desvio_TAB"
+let ripple=maximo-minimo
+echo "ripple = $&ripple"
+let desvio=abs(media-12)
+echo "desvio = $&desvio"
+echo "ripple_desvio_END"
+
+let soma_r= (renvvalue+rvregvalue)/1000
+let custo= soma_r+0.1*(ndiodosenv+4)+1000000*cenvvalue
+let qualidade= 1/(ripple + desvio + 0.000001)
+let merito= qualidade/custo
+echo "**************"
+echo "custo_merito_TAB"
+echo "custo = $&custo"
+echo "merito = $&merito"
+echo "custo_merito_END"
+echo "**************"
+
+quit
+.endc
+
+.end

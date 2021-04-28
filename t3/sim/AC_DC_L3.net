@@ -1,9 +1,9 @@
 Circuito AC DC L3
 
-.param renvvalue=1k
-.param cenvvalue=15u
-.param rvregvalue=6.3k
-.param ndiodosenv=18
+.param renvvalue=280k
+.param cenvvalue=1388u
+.param rvregvalue=240k
+.param ndiodosenv=19
 
 .csparam renvvalue={renvvalue}
 .csparam rvregvalue={rvregvalue}
@@ -14,10 +14,8 @@ Circuito AC DC L3
 .MODEL d-default D
 .MODEL n-diodes D (N={ndiodosenv})
 
-*230/16=14.375
 
-
-Vs 1 e 0.0 ac 1.0 sin(0 28.75 50 0 0)
+Vs 1 e 0.0 ac 1.0 sin(0 303.385 50 0 0)
 
 D-env1 1 2 d-default
 D-env2 e 2 d-default
@@ -31,6 +29,10 @@ C-env 2 0 {cenvvalue} ic=0
 R-vreg 2 3 {rvregvalue}
 
 D-vreg 3 0 n-diodes
+
+D-vreg2 3 0 n-diodes
+
+D-vreg3 3 0 n-diodes
 
 
 .control
@@ -50,24 +52,24 @@ tran 1u 200m 0 uic
 hardcopy exp_results.ps v(3) v(2) v(1)-v(e)
 
 run
-tran 1u 600m 400m uic
+tran 1u 400m 200m uic
 hardcopy exp_ripple.ps v(3)-12
 
-meas tran maximo MAX v(3) from=400m to=600m
-meas tran minimo MIN v(3) from=400m to=600m
-meas tran media AVG v(3) from=400m to=600m
+meas tran maximo MAX v(3) from=200m to=400m
+meas tran minimo MIN v(3) from=200m to=400m
+meas tran media AVG v(3) from=200m to=400m
 
 echo "**************"
 echo "ripple_desvio_TAB"
 let ripple=maximo-minimo
 echo "ripple = $&ripple"
-let desvio=abs(media-12)
+let desvio=media-12
 echo "desvio = $&desvio"
 echo "ripple_desvio_END"
 
 let soma_r= (renvvalue+rvregvalue)/1000
-let custo= soma_r+0.1*(ndiodosenv+4)+1000000*cenvvalue
-let qualidade= 1/(ripple + desvio + 0.000001)
+let custo= soma_r+0.1*(3*ndiodosenv+4)+1000000*cenvvalue
+let qualidade= 1/(ripple + abs(desvio) + 0.000001)
 let merito= qualidade/custo
 echo "**************"
 echo "custo_merito_TAB"

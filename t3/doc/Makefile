@@ -21,7 +21,8 @@ spice1: spice.log
 	$(eval NGSFIGPS=$(addsuffix .ps, $(NGSFIGS)))
 	$(eval NGSTABS=$(shell grep _TAB $< | sed 's/_TAB//g' | sed ':a;N;$!ba;s/\n/ /g'))
 	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
-	
+	ps2pdf exp_results.ps exp_results.pdf
+	ps2pdf exp_ripple.ps exp_ripple.pdf
 	
 
 spice.log: ../sim/AC_DC_L3.net

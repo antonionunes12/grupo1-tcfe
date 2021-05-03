@@ -113,9 +113,9 @@ disp(maximo-minimo);
 
 f_theo_table=fopen('theo_table_del.tex', 'w');
 
-string=strcat("Desvio","\t&\t",num2str(average-12,'%.6f'),'\\','\\','\\',"hline\n");
+string=strcat("Deviation","\t&\t",num2str(average-12,'%.6f'),'\\','\\','\\',"hline\n");
 fprintf(f_theo_table,string);
-string=strcat("DC level","\t&\t",num2str(Ndiodos*Von,'%.6f'),'\\','\\','\\',"hline\n");
+string=strcat("DC level","\t&\t",num2str(average,'%.6f'),'\\','\\','\\',"hline\n");
 fprintf(f_theo_table,string);
 string=strcat("Ripple","\t&\t",num2str(maximo-minimo,'%.6f'),'\\','\\','\\',"hline\n");
 fprintf(f_theo_table,string);

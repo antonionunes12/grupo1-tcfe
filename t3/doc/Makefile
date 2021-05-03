@@ -11,6 +11,7 @@ all: $(FILE).pdf
 
 $(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave_L3 spice1
 	pdflatex  $(FILE).tex
+	pdflatex  $(FILE).tex
 	
 octave_L3:
 	octave ../mat/L3.m

@@ -9,7 +9,7 @@ LODFIGS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 all: $(FILE).pdf
 	evince $< &
 
-$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave_L3 spice1 spice2
+$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) octave_L3 spice1 spice2 spice3 spice4 spice5
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 	
@@ -30,12 +30,38 @@ spice2: spice2.log
 	$(eval NGSFIGPS=$(addsuffix .ps, $(NGSFIGS)))
 	$(eval NGSTABS=$(shell grep _TAB $< | sed 's/_TAB//g' | sed ':a;N;$!ba;s/\n/ /g'))
 	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
+
+spice3: spice3.log
+	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))
+	$(eval NGSFIGPS=$(addsuffix .ps, $(NGSFIGS)))
+	$(eval NGSTABS=$(shell grep _TAB $< | sed 's/_TAB//g' | sed ':a;N;$!ba;s/\n/ /g'))
+	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
 	
+spice4: spice4.log
+	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))
+	$(eval NGSFIGPS=$(addsuffix .ps, $(NGSFIGS)))
+	$(eval NGSTABS=$(shell grep _TAB $< | sed 's/_TAB//g' | sed ':a;N;$!ba;s/\n/ /g'))
+	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
+	
+spice5: spice5.log
+	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))
+	$(eval NGSFIGPS=$(addsuffix .ps, $(NGSFIGS)))
+	$(eval NGSTABS=$(shell grep _TAB $< | sed 's/_TAB//g' | sed ':a;N;$!ba;s/\n/ /g'))
+	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
 
 spice1.log: ../sim/l4.net
 	ngspice -b $< -o $@
 	
 spice2.log: ../sim/output_impedance.net
+	ngspice -b $< -o $@
+	
+spice3.log: ../sim/reqc1.net
+	ngspice -b $< -o $@
+	
+spice4.log: ../sim/reqc2.net
+	ngspice -b $< -o $@
+	
+spice5.log: ../sim/reqc3.net
 	ngspice -b $< -o $@
 
 #convert libreoffice draw figures to pdf

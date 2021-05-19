@@ -1,0 +1,32 @@
+
+Circuit: circuito output impedance
+
+false = 0.000000e+00
+true = 1.000000e+00
+boltz = 1.380649e-23
+c = 2.997925e+08
+cb_value = 1.000000e-03
+ci_value = 1.000000e-03
+co_value = 1.000000e-06
+e = 2.718282e+00
+echarge = 1.602177e-19
+i = 0.000000e+00,1.000000e+00
+kelvin = -2.73150e+02
+no = 0.000000e+00
+pi = 3.141593e+00
+planck = 6.626070e-34
+r1_value = 8.000000e+04
+r2_value = 2.000000e+04
+rc_value = 1.000000e+03
+re_value = 1.000000e+02
+rin_value = 1.000000e+02
+rout_value = 1.000000e+02
+yes = 1.000000e+00
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+
+No. of Data Rows : 71
+out_imp_TAB
+out_imp = 10.0554 + -1.18427 j
+out_imp_END
+ngspice-31 done

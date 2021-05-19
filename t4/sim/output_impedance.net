@@ -7,7 +7,7 @@ CIRCUITO output impedance
 .param R2_value=20k
 .param Rc_value=1k
 .param Re_value=100
-.param Rout_value=0
+.param Rout_value=100
 .param Ci_value=1m
 .param Cb_value=1m
 .param Co_value=1u

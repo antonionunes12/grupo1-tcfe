@@ -11,6 +11,7 @@ CIRCUITO Req C2
 .param Ci_value=1m
 .param Vaux_value=1
 .param Co_value=1u
+.param RL_value=8
 
 .csparam Rin_value={Rin_value}
 .csparam R1_value={R1_value}
@@ -21,6 +22,7 @@ CIRCUITO Req C2
 .csparam Ci_value={Ci_value}
 .csparam Vaux_value={Vaux_value}
 .csparam Co_value={Co_value}
+.csparam RL_value={RL_value}
 
 
 * PHILIPS BJT'S
@@ -29,10 +31,8 @@ CIRCUITO Req C2
 
 Vcc vcc 0 12
 Vin in 0 0.0
-Rin in in2 {Rin_value}
+Rin in base {Rin_value}
 
-* input coupling capacitor
-Ci in2 base {Ci_value}
 
 * bias circuit
 R1 vcc base {R1_value}
@@ -50,11 +50,9 @@ Vaux emit 0 {Vaux_value}
 Q2 0 coll emit2 BC557A
 Rout emit2 vcc {Rout_value}
 
-* output coupling capacitor
-Co emit2 out {Co_value}
 
 * load
-VL out 0 0 ac 1.0 sin(0 10m 1k)
+RL emit2 0 {RL_value}
 
 .control
 
@@ -62,9 +60,9 @@ op
 
 let req2=-1/i(Vaux)
 
-echo "out_imp_TAB"
-echo "Req C2 = $&req2"
-echo "out_imp_END"
+echo "reqc2_TAB"
+echo "Req Ce = $&req2"
+echo "reqc2_END"
 
 
 quit

@@ -11,6 +11,7 @@ CIRCUITO Req C3
 .param Ci_value=1m
 .param Cb_value=1m
 .param Vaux_value=1
+.param RL_value=8
 
 .csparam Rin_value={Rin_value}
 .csparam R1_value={R1_value}
@@ -21,6 +22,7 @@ CIRCUITO Req C3
 .csparam Vaux_value={Vaux_value}
 .csparam Cb_value={Cb_value}
 .csparam Vaux_value={Vaux_value}
+.csparam RL_value={RL_value}
 
 
 * PHILIPS BJT'S
@@ -29,22 +31,15 @@ CIRCUITO Req C3
 
 Vcc vcc 0 12
 Vin in 0 0.0
-Rin in in2 {Rin_value}
-
-* input coupling capacitor
-Ci in2 base {Ci_value}
+Rin in base {Rin_value}
 
 * bias circuit
 R1 vcc base {R1_value}
 R2 base 0 {R2_value}
 
 * gain stage
-Q1 coll base emit BC547A
+Q1 coll base 0 BC547A
 Rc vcc coll {Rc_value}
-Re emit 0 {Re_value}
-
-* bypass capacitor
-Cb emit 0 {Cb_value}
 
 
 * output stage
@@ -55,7 +50,8 @@ Rout emit2 vcc {Rout_value}
 Vaux emit2 out {Vaux_value}
 
 * load
-VL out 0 0 ac 1.0 sin(0 10m 1k)
+RL out 0 {RL_value}
+
 
 .control
 
@@ -63,9 +59,9 @@ op
 
 let req3=1/i(Vaux)
 
-echo "out_imp_TAB"
-echo "Req C3 = $&req3"
-echo "out_imp_END"
+echo "reqc3_TAB"
+echo "Req Co = $&req3"
+echo "reqc3_END"
 
 quit
 .endc

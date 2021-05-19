@@ -1,0 +1,68 @@
+
+Circuit: circuito l4
+
+false = 0.000000e+00
+true = 1.000000e+00
+boltz = 1.380649e-23
+c = 2.997925e+08
+cb_value = 1.000000e-03
+ci_value = 1.000000e-03
+co_value = 1.000000e-06
+e = 2.718282e+00
+echarge = 1.602177e-19
+i = 0.000000e+00,1.000000e+00
+kelvin = -2.73150e+02
+no = 0.000000e+00
+pi = 3.141593e+00
+planck = 6.626070e-34
+r1_value = 8.000000e+04
+r2_value = 2.000000e+04
+rc_value = 1.000000e+03
+re_value = 1.000000e+02
+rin_value = 1.000000e+02
+rl_value = 8.000000e+00
+rout_value = 1.000000e+02
+yes = 1.000000e+00
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+
+No. of Data Rows : 1
+**************
+NPN_TAB
+V_CE = 3.02156
+V_BE = 0.708289
+V_CE>V_BE = Yes
+NPN_END
+**************
+PNP_TAB
+V_CE = 4.70867
+V_EB = 0.814475
+V_EC>V_EB = Yes
+PNP_END
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+
+No. of Data Rows : 71
+
+The file "vo1f.ps" may be printed on a postscript printer.
+in_imp_TAB
+in_imp = -563.853 + 84.4302 j
+in_imp_END
+
+The file "vo2f.ps" may be printed on a postscript printer.
+maximo              =  3.790405e+01 at=  1.258925e+05
+lim_inf             =  8.880418e+03
+lim_sup             =  1.603742e+06
+**************
+gain_band_COfreq_TAB
+V_Gain = 37.904
+Bandwidth = 1.59486E+06
+CO_Freq = 8880.42
+gain_band_COfreq_END
+**************
+custo_merito_TAB
+price = 2102.51
+merit = 3.23771
+custo_merito_END
+**************
+ngspice-31 done

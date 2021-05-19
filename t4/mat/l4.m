@@ -1,72 +1,92 @@
 %gain stage
 
-VT=25e-3
-BFN=178.7
-VAFN=69.7
-RE1=100
-RC1=1000
-RB1=80000
-RB2=20000
-VBEON=0.7
-VCC=12
-RS=100
+VT=25e-3;
+BFN=178.7;
+VAFN=69.7;
+RE1=100;
+RC1=1000;
+RB1=80000;
+RB2=20000;
+VBEON=0.7;
+VCC=12;
+RS=100;
 
-RB=1/(1/RB1+1/RB2)
-VEQ=RB2/(RB1+RB2)*VCC
-IB1=(VEQ-VBEON)/(RB+(1+BFN)*RE1)
-IC1=BFN*IB1
-IE1=(1+BFN)*IB1
-VE1=RE1*IE1
-VO1=VCC-RC1*IC1
-VCE=VO1-VE1
+RB=1/(1/RB1+1/RB2);
+VEQ=RB2/(RB1+RB2)*VCC;
+IB1=(VEQ-VBEON)/(RB+(1+BFN)*RE1);
+IC1=BFN*IB1;
+IE1=(1+BFN)*IB1;
+VE1=RE1*IE1;
+VO1=VCC-RC1*IC1;
+VCE=VO1-VE1;
 
 
-gm1=IC1/VT
-rpi1=BFN/gm1
-ro1=VAFN/IC1
+gm1=IC1/VT;
+rpi1=BFN/gm1;
+ro1=VAFN/IC1;
 
-AV1 = RC1*(RE1-gm1*rpi1*ro1)/((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)
+AV1 = RC1*(RE1-gm1*rpi1*ro1)/((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2);
 
-AV1simple = gm1*RC1/(1+gm1*RE1)
+AV1simple = gm1*RC1/(1+gm1*RE1);
 
-RE1=0
-AV1 = RC1*(RE1-gm1*rpi1*ro1)/((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)
+RE1=0;
+AV1 = RC1*(RE1-gm1*rpi1*ro1)/((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2);
 AV1_aux= AV1;
-AV1simple = gm1*RC1/(1+gm1*RE1)
+AV1simple = gm1*RC1/(1+gm1*RE1);
 
-RE1=100
+RE1=100;
 
-ZI1 = ((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)/(ro1+RC1+RE1)
+ZI1 = ((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)/(ro1+RC1+RE1);
 
-ZX = ro1*((RB+rpi1)*RE1/(RB+rpi1+RE1))/(1/(1/ro1+1/(rpi1+RB)+1/RE1+gm1*rpi1/(rpi1+RB)))
+ZX = ro1*((RB+rpi1)*RE1/(RB+rpi1+RE1))/(1/(1/ro1+1/(rpi1+RB)+1/RE1+gm1*rpi1/(rpi1+RB)));
 
-ZO1 = 1/(1/ZX+1/RC1)
+ZO1 = 1/(1/ZX+1/RC1);
 
 
 
 %ouput stage
-BFP = 227.3
-VAFP = 37.2
-RE2 = 100
-VEBON = 0.7
-VI2 = VO1
-IE2 = (VCC-VEBON-VI2)/RE2
-IC2 = BFP/(BFP+1)*IE2
-VO2 = VCC - RE2*IE2
+BFP = 227.3;
+VAFP = 37.2;
+RE2 = 100;
+VEBON = 0.7;
+VI2 = VO1;
+IE2 = (VCC-VEBON-VI2)/RE2;
+IC2 = BFP/(BFP+1)*IE2;
+VO2 = VCC - RE2*IE2;
 
 
-gm2 = IC2/VT
-go2 = IC2/VAFP
-gpi2 = gm2/BFP
-ge2 = 1/RE2
+gm2 = IC2/VT;
+go2 = IC2/VAFP;
+gpi2 = gm2/BFP;
+ge2 = 1/RE2;
 
-AV2 = gm2/(gm2+gpi2+go2+ge2)
+AV2 = gm2/(gm2+gpi2+go2+ge2);
 
 
 
-ZI2 = (gm2+gpi2+go2+ge2)/gpi2/(gpi2+go2+ge2)
+ZI2 = (gm2+gpi2+go2+ge2)/gpi2/(gpi2+go2+ge2);
 
-ZO2 = 1/(gm2+gpi2+go2+ge2)
+ZO2 = 1/(gm2+gpi2+go2+ge2);
 
 %Assuming all capacitors as short-circuits
-Gain = AV1_aux*AV2
+Gain = AV1_aux*AV2;
+
+fich= fopen("theo_imp_del.tex","w");
+string=strcat("Z1_I","\t&\t",num2str(ZI1,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("Z1_O","\t&\t",num2str(ZO1,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("Z2_I","\t&\t",num2str(ZI2,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("Z2_O","\t&\t",num2str(ZO2,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+fclose(fich);
+
+fich = fopen("theo_gain_del.tex","w");
+string=strcat("G1","\t&\t",num2str(AV1_aux,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("G2","\t&\t",num2str(AV2,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("G_T","\t&\t",num2str(Gain,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+fclose(fich);

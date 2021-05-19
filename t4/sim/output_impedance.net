@@ -1,3 +1,5 @@
+CIRCUITO output impedance
+
 .options savecurrents
 
 .param Rin_value=100
@@ -68,11 +70,11 @@ let out_imp_re= Re(-1/i(VL)[40])
 let out_imp_im= Im(-1/i(VL)[40])
 
 echo "out_imp_TAB"
-echo "out_imp= $&out_imp_re + $&out_imp_im j"
+echo "out_imp = $&out_imp_re + $&out_imp_im j"
 echo "out_imp_END"
 
-*need a different setup to measure output impedance
 
+quit
 .endc
 
 .end

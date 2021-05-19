@@ -1,4 +1,4 @@
-CIRCUITO output impedance
+CIRCUITO Req C3
 
 .options savecurrents
 
@@ -7,10 +7,10 @@ CIRCUITO output impedance
 .param R2_value=20k
 .param Rc_value=1k
 .param Re_value=100
-.param Rout_value=0
+.param Rout_value=100
 .param Ci_value=1m
 .param Cb_value=1m
-.param Co_value=1u
+.param Vaux_value=1
 
 .csparam Rin_value={Rin_value}
 .csparam R1_value={R1_value}
@@ -18,10 +18,9 @@ CIRCUITO output impedance
 .csparam Rc_value={Rc_value}
 .csparam Re_value={Re_value}
 .csparam Rout_value={Rout_value}
-.csparam Ci_value={Ci_value}
+.csparam Vaux_value={Vaux_value}
 .csparam Cb_value={Cb_value}
-.csparam Co_value={Co_value}
-
+.csparam Vaux_value={Vaux_value}
 
 
 * PHILIPS BJT'S
@@ -52,29 +51,21 @@ Cb emit 0 {Cb_value}
 Q2 0 coll emit2 BC557A
 Rout emit2 vcc {Rout_value}
 
-* output coupling capacitor
-Co emit2 out {Co_value}
+* output coupling capacitor Req 
+Vaux emit2 out {Vaux_value}
 
 * load
 VL out 0 0 ac 1.0 sin(0 10m 1k)
 
-
 .control
 
-print all
+op
 
-
-ac dec 10 10 100MEG
-
-let out_imp_re= Re(-1/i(VL)[40])
-let out_imp_im= Im(-1/i(VL)[40])
+let req3=1/i(Vaux)
 
 echo "out_imp_TAB"
-echo "out_imp = $&out_imp_re + $&out_imp_im j"
+echo "Req C3 = $&req3"
 echo "out_imp_END"
-
 
 quit
 .endc
-
-.end

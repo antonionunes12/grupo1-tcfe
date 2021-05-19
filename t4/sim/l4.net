@@ -66,6 +66,7 @@ RL out 0 {RL_value}
 print all
 
 op
+
 echo "**************"
 echo "NPN_TAB"
 let V_CE=v(coll)-v(emit)
@@ -104,6 +105,13 @@ plot vdb(coll)
 plot vp(coll)
 hardcopy vo1f.ps vdb(coll)
 
+*input impedance in ohm
+echo "in_imp_TAB"
+let in_imp_re= Re(v(in2)[40]/i(Vin)[40])
+let in_imp_im= Im(v(in2)[40]/i(Vin)[40])
+echo "in_imp= $&in_imp_re + $&in_imp_im j"
+echo "in_imp_END"
+
 
 plot vdb(out)
 plot vp(out)
@@ -119,12 +127,6 @@ let gain = maximo
 let CO_Freq= lim_inf
 let qualidade = bandwidth*maximo/CO_Freq
 
-*input impedance in kohm
-echo "in_imp_TAB"
-let in_imp_re= Re(v(in2)[40]/(v(in)[40]-v(in2)[40])/100*1000)
-let in_imp_im= Im(v(in2)[40]/(v(in)[40]-v(in2)[40])/100*1000)
-echo "in_imp= $&in_imp_re + $&in_imp_im j"
-echo "in_imp_END"
 
 echo "**************"
 echo "gain_band_COfreq_TAB"
@@ -151,5 +153,5 @@ echo "**************"
 *need a different setup to measure output impedance
 
 .endc
-
 .end
+

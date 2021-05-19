@@ -31,6 +31,7 @@ AV1simple = gm1*RC1/(1+gm1*RE1)
 
 RE1=0
 AV1 = RC1*(RE1-gm1*rpi1*ro1)/((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)
+AV1_aux= AV1;
 AV1simple = gm1*RC1/(1+gm1*RE1)
 
 RE1=100
@@ -66,3 +67,6 @@ AV2 = gm2/(gm2+gpi2+go2+ge2)
 ZI2 = (gm2+gpi2+go2+ge2)/gpi2/(gpi2+go2+ge2)
 
 ZO2 = 1/(gm2+gpi2+go2+ge2)
+
+%Assuming all capacitors as short-circuits
+Gain = AV1_aux*AV2

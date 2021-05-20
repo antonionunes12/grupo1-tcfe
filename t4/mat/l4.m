@@ -36,7 +36,9 @@ AV1simple = gm1*RC1/(1+gm1*RE1);
 
 RE1=100;
 
-ZI1 = ((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)/(ro1+RC1+RE1);
+%ZI1 = ((ro1+RC1+RE1)*(RB+rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)/(ro1+RC1+RE1);
+aux1 = RB1*RB2/(RB1+RB2);
+ZI1 = aux1*rpi1/(aux1+rpi1);
 
 ZX = ro1*((RB+rpi1)*RE1/(RB+rpi1+RE1))/(1/(1/ro1+1/(rpi1+RB)+1/RE1+gm1*rpi1/(rpi1+RB)));
 

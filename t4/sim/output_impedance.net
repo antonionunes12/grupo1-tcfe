@@ -29,8 +29,7 @@ CIRCUITO output impedance
 .MODEL BC547A NPN(IS=1.533E-14 ISE=7.932E-16 ISC=8.305E-14 XTI=3 BF=178.7 BR=8.628 IKF=0.1216 IKR=0.1121 XTB=1.5 VAF=69.7 VAR=44.7 VJE=0.4209 VJC=0.2 RE=0.6395 RC=0.6508 RB=1 RBM=1 IRB=1E-06 CJE=1.61E-11 CJC=4.388p XCJC=0.6193 FC=0.7762 NF=1.002 NR=1.004 NE=1.436 NC=1.207 MJE=0.3071 MJC=0.2793 TF=4.995E-10 TR=1m2 ITF=0.7021 VTF=3.523 XTF=139 EG=1.11)
 
 Vcc vcc 0 12
-Vin in 0 0.0
-Rin in in2 {Rin_value}
+Rin 0 in2 {Rin_value}
 
 * input coupling capacitor
 Ci in2 base {Ci_value}
@@ -56,7 +55,7 @@ Rout emit2 vcc {Rout_value}
 Co emit2 out {Co_value}
 
 * load
-VL out 0 0 ac 1.0 sin(0 10m 1k)
+VL out 0 0.0 ac 1.0 sin(0 10m 1k 0 0)
 
 
 .control
@@ -66,8 +65,10 @@ print all
 
 ac dec 10 10 100MEG
 
-let out_imp_re= Re(-1/i(VL)[40])
-let out_imp_im= Im(-1/i(VL)[40])
+
+
+let out_imp_re= Re(-v(out)[40]/i(VL)[40])
+let out_imp_im= Im(-v(out)[40]/i(VL)[40])
 
 echo "out_imp_TAB"
 echo "out_imp = $&out_imp_re + $&out_imp_im j"

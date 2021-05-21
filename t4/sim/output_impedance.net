@@ -71,7 +71,7 @@ let out_imp_re= Re(-v(out)[40]/i(VL)[40])
 let out_imp_im= Im(-v(out)[40]/i(VL)[40])
 
 echo "out_imp_TAB"
-echo "out_imp = $&out_imp_re + $&out_imp_im j"
+echo "Output Imp = $&out_imp_re + $&out_imp_im j"
 echo "out_imp_END"
 
 

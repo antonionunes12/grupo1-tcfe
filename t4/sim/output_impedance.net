@@ -2,15 +2,17 @@ CIRCUITO output impedance
 
 .options savecurrents
 
+*Rin e RL fixos
 .param Rin_value=100
-.param R1_value=80k
-.param R2_value=20k
-.param Rc_value=1k
-.param Re_value=100
-.param Rout_value=100
-.param Ci_value=1m
-.param Cb_value=1m
-.param Co_value=1u
+.param R1_value=33.7k
+.param R2_value=3.6k
+.param Rc_value=3.8k
+.param Re_value=200
+.param Rout_value=400
+.param RL_value=8
+.param Ci_value=800u
+.param Cb_value=800u
+.param Co_value=600u
 
 .csparam Rin_value={Rin_value}
 .csparam R1_value={R1_value}
@@ -69,9 +71,11 @@ ac dec 10 10 100MEG
 
 let out_imp_re= Re(-v(out)[40]/i(VL)[40])
 let out_imp_im= Im(-v(out)[40]/i(VL)[40])
+let absoluto = abs(-v(out)[40]/i(VL)[40])
 
 echo "out_imp_TAB"
 echo "Output Imp = $&out_imp_re + $&out_imp_im j"
+echo "Absolute value = $&absoluto"
 echo "out_imp_END"
 
 

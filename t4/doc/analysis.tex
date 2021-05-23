@@ -72,7 +72,36 @@ In conclusion, when we merge these two circuits, we end up with our BJT Amplifie
 
 \clearpage
 \subsection{Theoretical Analysis}
-\label{subsec:Req}
+\label{subsec:Theo}
+
+Firstly, it is important to run an OP analysis of the circuit in order to compute the voltage drops within each of the transistors to ensure they are operating in the forward active region (FAR). To confirm this, the voltages between the emitter and collector as well as between emitter and base (for each of the transistors) were calculated and compared, confirming FAR as seen in the tables below:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    {\bf Name} & {\bf Value} \\ \hline
+    \input{FAR_NPN_del.tex}
+    \end{tabular}
+    \caption{NPN voltages and FAR confirmation}
+    \label{tab:theo_NPN}
+\end{table}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    {\bf Name} & {\bf Value} \\ \hline
+    \input{FAR_PNP_del.tex}
+    \end{tabular}
+    \caption{PNP voltages and FAR confirmation}
+    \label{tab:theo_PNP}
+\end{table}
+
+As we can see, since V(CE) is greater than V(BEON), (as well as V(EC) with V(EBON)), the forward active region is confirmed for each of the transistors, meaning it's safe to operate in these conditions.
+
+As we'll be able to see in section \ref{subsec:Sim}, the theoretical and simulation results match up considerably well, not only at checking the FAR but also when comparing the values.
+
 
 \subsubsection{Impedances}
 
@@ -93,6 +122,8 @@ On the other hand, the first stage output impedance can be obtained by:
 \begin{equation}
     Z_{O1}=r_o // R_C  
 \end{equation}
+
+\clearpage
 
 Regarding the second stage, by analysing the circuit we get:
 
@@ -205,10 +236,10 @@ The theoretical value of the lower cut-off frequency is presented in the table b
     \label{tab:theo_CO_freq}
 \end{table}
 
-\pagebreak
+\clearpage
 
 \subsection{Simulation Analysis}
-\label{subsec:Req}
+\label{subsec:Sim}
 
 On the Simulation Side, we are interested in the two impedances associated with the circuit as a whole ($Z_I$ and $Z_O$), both cut-off frequencies ($f_{CO_L}$ and $f_{CO_H}$), the bandwidth (interval between the cut-off frequencies) and the total gain ($A_V$) measured in the bandpass region. The measurement of these parameters and the overall performance of the circuit is outlined in \ref{sec:merit}.
 

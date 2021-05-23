@@ -58,7 +58,8 @@ ZI1 = 1/(1/RB+1/(((ro1+RC1+RE1)*(rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)/(ro1+RC1+RE
 ZX = ro1*((RSB+rpi1)*RE1/(RSB+rpi1+RE1))/(1/(1/ro1+1/(rpi1+RSB)+1/RE1+gm1*rpi1/(rpi1+RSB)))
 ZX = ro1*(   1/RE1+1/(rpi1+RSB)+1/ro1+gm1*rpi1/(rpi1+RSB)  )/(   1/RE1+1/(rpi1+RSB) ) 
 ZO1_aux = 1/(1/ZX+1/RC1)
-RE1=0
+
+RE1= 0
 ZI1 = 1/(1/RB+1/(((ro1+RC1+RE1)*(rpi1+RE1)+gm1*RE1*ro1*rpi1 - RE1^2)/(ro1+RC1+RE1)))
 ZO1 = 1/(1/ro1+1/RC1)
 
@@ -71,6 +72,7 @@ VI2 = VO1
 IE2 = (VCC-VEBON-VI2)/RE2
 IC2 = BFP/(BFP+1)*IE2
 VO2 = VCC - RE2*IE2
+VEC = VO2
 
 gm2 = IC2/VT
 go2 = IC2/VAFP
@@ -90,6 +92,36 @@ AV_DB = 20*log10(abs(AV))
 AV_DB_aux = 20*log10(abs(AV_aux))
 ZI=ZI1
 ZO=1/(go2+gm2/gpi2*gB+ge2+gB)
+
+
+fich= fopen("FAR_NPN_del.tex","w");
+string=strcat("V(CE)","\t&\t",num2str(VCE,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("V(BEON)","\t&\t",num2str(VBEON,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+if(VCE>VBEON)
+  string=strcat("V(CE) greater than V(BEON)","\t&\t","Yes",'\\','\\','\\',"hline\n");
+else
+  string=strcat("V(CE) greater than V(BEON)","\t&\t","No",'\\','\\','\\',"hline\n");
+end
+fprintf(fich,string);
+fclose(fich);
+
+
+fich= fopen("FAR_PNP_del.tex","w");
+string=strcat("V(EC)","\t&\t",num2str(VEC,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+string=strcat("V(EBON)","\t&\t",num2str(VEBON,'%.6f'),'\\','\\','\\',"hline\n");
+fprintf(fich,string);
+if(VEC>VEBON)
+  string=strcat("V(EC) greater than V(EBON)","\t&\t","Yes",'\\','\\','\\',"hline\n");
+else
+  string=strcat("V(EC) greater than V(EBON)","\t&\t","No",'\\','\\','\\',"hline\n");
+end
+fprintf(fich,string);
+fclose(fich);
+
+
 
 fich= fopen("theo_imp_del.tex","w");
 string=strcat("$Z_{I1}$","\t&\t",num2str(ZI1,'%.6f'),'\\','\\','\\',"hline\n");

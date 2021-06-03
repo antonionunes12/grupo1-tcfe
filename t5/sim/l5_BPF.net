@@ -49,25 +49,23 @@
 
 .options savecurrents
 
-Vcc vcc 0 5.0
-Vee vee 0 -5.0
+Vcc vcc 0 10.0
+Vee vee 0 -10.0
 Vin in 0 0 ac 1.0 sin(0 10m 1k)
 
 C1 in non_inv 220n
 C2 out 0 220n
 
-X1 non_inv inv vcc vee out uA741
+X1 non_inv inv vcc vee out_amp uA741
 
 R1 non_inv 0 1000
-R2 out_amp out 10000
+R2 out_amp out 1000
 R3 out_amp inv 100000
 R4 inv 0 1000
 
-* load
-RL out 0 8
 
 .op
-.end
+
 
 .control
 
@@ -75,15 +73,15 @@ print all
 
 * time analysis
 tran 1e-5 1e-2
-plot v(out)
 hardcopy vo1.ps vdb(out)
 
 
 * frequency analysis
 ac dec 10 10 100MEG
-plot vdb(out)
-plot vp(out)
 hardcopy vo1f.ps vdb(out)
+meas AC maximo MAX vdb(out) from=10 to=100MEG
+
+print maximo
 
 *input impedance in ohm
 let RE_zi= RE(-v(in)[40]/i(Vin)[40])
@@ -92,4 +90,6 @@ echo "Input Imp = $&RE_zi + $&IM_zi j"
 
 *need a different setup to measure output impedance
 
+quit
 .endc
+.end

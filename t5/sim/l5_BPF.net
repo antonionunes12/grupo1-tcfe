@@ -83,7 +83,7 @@ meas AC fO MAX_AT vdb(out) from=10 to=100MEG
 
 echo "gain_freq_sim_TAB"
 echo "AV = $&maximo = dB"
-echo "f_O = $&fo = Hz"
+echo "fO = $&fo = Hz"
 echo "gain_freq_sim_END"
 
 

@@ -65,9 +65,7 @@ R2 out_amp out 1000
 R3 out_amp inv 100000
 R4 inv 0 1000
 
-
 .op
-
 
 .control
 
@@ -78,6 +76,9 @@ print all
 ac dec 1000 10 100MEG
 hardcopy vodb.ps vdb(out)
 hardcopy voph.ps 180/PI*phase(v(out))
+hardcopy v_non_inv.ps 180/PI*phase(v(non_inv))
+hardcopy v_out_amp.ps 180/PI*phase(v(out_amp))
+
 meas AC maximo MAX vdb(out) from=10 to=100MEG
 meas AC fO MAX_AT vdb(out) from=10 to=100MEG
 

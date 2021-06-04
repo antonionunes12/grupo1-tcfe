@@ -24,6 +24,8 @@ spice1: spice1.log
 	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
 	ps2pdf vodb.ps vodb.pdf
 	ps2pdf voph.ps voph.pdf
+	ps2pdf v_non_inv.ps v_non_inv.pdf
+	ps2pdf v_out_amp.ps v_out_amp.pdf
 	
 spice2: spice2.log
 	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))

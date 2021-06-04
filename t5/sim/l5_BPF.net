@@ -1,3 +1,5 @@
+L5 Circuit
+
 *-----------------------------------------------------------------------------
 *
 * To use a subcircuit, the name must begin with 'X'.  For example:
@@ -54,7 +56,7 @@ Vee vee 0 -10.0
 Vin in 0 0 ac 1.0 sin(0 10m 1k)
 
 C1 in non_inv 220n
-C2 out 0 220n
+C2 out 0 110n
 
 X1 non_inv inv vcc vee out_amp uA741
 
@@ -71,24 +73,39 @@ R4 inv 0 1000
 
 print all
 
-* time analysis
-tran 1e-5 1e-2
-hardcopy vo1.ps vdb(out)
-
 
 * frequency analysis
-ac dec 10 10 100MEG
-hardcopy vo1f.ps vdb(out)
+ac dec 1000 10 100MEG
+hardcopy vodb.ps vdb(out)
+hardcopy voph.ps 180/PI*phase(v(out))
 meas AC maximo MAX vdb(out) from=10 to=100MEG
+meas AC fO MAX_AT vdb(out) from=10 to=100MEG
 
-print maximo
+echo "gain_freq_sim_TAB"
+echo "AV = $&maximo = dB"
+echo "f_O = $&fo = Hz"
+echo "gain_freq_sim_END"
+
+
+let index= nint(log(fO/1000)/log(1.0023055678241)+2000)
+print index
+echo ".csparam index=$&index" > index.txt
 
 *input impedance in ohm
-let RE_zi= RE(-v(in)[40]/i(Vin)[40])
-let IM_zi= RE(-v(in)[40]/i(Vin)[40])
-echo "Input Imp = $&RE_zi + $&IM_zi j"
 
-*need a different setup to measure output impedance
+let RE_zi= RE(-v(in)[index]/i(Vin)[index])
+let IM_zi= IM(-v(in)[index]/i(Vin)[index])
+echo "in_imp_TAB"
+echo "Input Imp = $&RE_zi + $&IM_zi j"
+echo "in_imp_END"
+
+let av_dev = abs(100-10^(maximo/20))
+let freq_dev = abs(1000-fO)
+let merit_no_price = 1/(av_dev*freq_dev)
+print av_dev
+print freq_dev
+print merit_no_price
+
 
 quit
 .endc

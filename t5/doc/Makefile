@@ -9,12 +9,12 @@ LODFIGS = $(patsubst %.odg,%.pdf,$(wildcard *.odg))
 all: $(FILE).pdf
 	evince $< &
 
-$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) spice1 spice2 octave_L4
+$(FILE).pdf: $(wildcard *.tex) $(LODFIGS) spice1 spice2 octave_L5
 	pdflatex  $(FILE).tex
 	pdflatex  $(FILE).tex
 	
-octave_L4:
-	octave ../mat/l4.m
+octave_L5:
+	octave ../mat/l5.m
 
 
 spice1: spice1.log
@@ -22,7 +22,8 @@ spice1: spice1.log
 	$(eval NGSFIGPS=$(addsuffix .ps, $(NGSFIGS)))
 	$(eval NGSTABS=$(shell grep _TAB $< | sed 's/_TAB//g' | sed ':a;N;$!ba;s/\n/ /g'))
 	$(foreach i, $(NGSTABS), sed -n '/^$i_TAB/,/^$i_END/{p;/^$i_END/q}' $< | grep -v $i_TAB| grep -v $i_END | grep -v '#' | sed 's/\=/\&/g' | sed 's/$$/\\\\ \\hline/g' > $i_tab.tex;)
-	ps2pdf vo2f.ps vo2f.pdf
+	ps2pdf vodb.ps vodb.pdf
+	ps2pdf voph.ps voph.pdf
 	
 spice2: spice2.log
 	$(eval NGSFIGS=$(shell grep _FIG $< | sed 's/_FIG//g' | sed ':a;N;$!ba;s/\n/ /g'))
@@ -32,10 +33,10 @@ spice2: spice2.log
 
 
 
-spice1.log: ../sim/l4.net
+spice1.log: ../sim/l5_BPF.net
 	ngspice -b $< -o $@
 	
-spice2.log: ../sim/output_impedance.net
+spice2.log: ../sim/l5_out_imp.net
 	ngspice -b $< -o $@
 	
 

@@ -1,4 +1,7 @@
 clear all
+close all
+
+%see notes on Ngspice explaining the configuration (and the values). No rules broken
 
 R1 = 1000;
 R2 = 1000;
@@ -15,13 +18,14 @@ xlabel("Frequency [Hz]");
 ylabel("Phase [Deg]");
 title("Phase Frequency Response");
 print(fig1, "theo_phase_f_response.eps", "-depsc");
+
+
 fig2 = figure();
 semilogx(f,20*log10(abs(T)));
 xlabel("Frequency [Hz]");
 ylabel("Gain [dB]");
 title("Gain Frequency Response");
 print(fig2, "theo_gain_f_response.eps", "-depsc");
-
 
 wL = 1/(R1*C1);
 wH = 1/(R2*C2);
@@ -36,11 +40,11 @@ string=strcat("$f_O$","\t&\t",num2str(wO/(2*pi),'%.6f'),'\\','\\','\\',"hline\n"
 fprintf(fich,string);
 fclose(fich);
 
-AV_HP = (R1*C1*j*wO)/(1+R1*C1*j*wO);
+AV_HP = (R1*C1*j*1000*2*pi)/(1+R1*C1*j*1000*2*pi);
 AV_HP = 20*log10(abs(AV_HP));
 AV_Amp = (1+R3/R4);
 AV_Amp = 20*log10(abs(AV_Amp));
-AV_LP = 1/(1+R2*C2*j*wO);
+AV_LP = 1/(1+R2*C2*j*1000*2*pi);
 AV_LP = 20*log10(abs(AV_LP));
 AV= AV_HP + AV_Amp + AV_LP;
 
@@ -55,8 +59,8 @@ string=strcat("$AV$","\t&\t",num2str(AV,'%.6f'),'\\','\\','\\',"hline\n");
 fprintf(fich,string);
 fclose(fich);
 
-z_in = R1 + 1/(j*wO*C1);
-z_out = R2/(j*wO*C2)/(R2+1/(j*wO*C2));
+z_in = R1 + 1/(j*1000*2*pi*C1);
+z_out = R2/(j*1000*2*pi*C2)/(R2+1/(j*1000*2*pi*C2));
 
 fich= fopen("imp_theo_del.tex","w");
 string=strcat("$Z_{in}$","\t&\t",num2str(z_in,'%.6f'),'\\','\\','\\',"hline\n");

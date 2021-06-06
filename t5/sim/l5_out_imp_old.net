@@ -47,7 +47,6 @@ L5 Circuit Output Impedance
 .model qx NPN(Is=800.0E-18 Bf=93.75)
 .ends
 
-.INCLUDE index.txt
 
 .options savecurrents
 
@@ -79,8 +78,8 @@ print all
 ac dec 1000 10 100MEG
 
 *output impedance in ohm
-let RE_zo= RE(-v(out)[index]/i(Vaux)[index])
-let IM_zo= IM(-v(out)[index]/i(Vaux)[index])
+let RE_zo= RE(-v(out)[2000]/i(Vaux)[2000])
+let IM_zo= IM(-v(out)[2000]/i(Vaux)[2000])
 echo "out_imp_TAB"
 echo "Output Imp = $&RE_zo + $&IM_zo j"
 echo "out_imp_END"

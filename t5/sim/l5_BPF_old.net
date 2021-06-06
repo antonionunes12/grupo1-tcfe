@@ -56,6 +56,8 @@ Vee vee 0 -10.0
 Vin in 0 0 ac 1.0 sin(0 10m 1k)
 
 C1 in non_inv 220n
+
+*two 220nF capacitors in series
 C2 out 0 110n
 
 X1 non_inv inv vcc vee out_amp uA741
@@ -76,36 +78,37 @@ print all
 ac dec 1000 10 100MEG
 hardcopy vodb.ps vdb(out)
 hardcopy voph.ps 180/PI*phase(v(out))
-hardcopy v_non_inv.ps 180/PI*phase(v(non_inv))
-hardcopy v_out_amp.ps 180/PI*phase(v(out_amp))
 
 meas AC maximo MAX vdb(out) from=10 to=100MEG
 meas AC fO MAX_AT vdb(out) from=10 to=100MEG
+let gain= vdb(out)[2000]
 
 echo "gain_freq_sim_TAB"
-echo "AV = $&maximo = dB"
+echo "AV = $&gain = dB"
 echo "fO = $&fo = Hz"
 echo "gain_freq_sim_END"
 
 
-let index= nint(log(fO/1000)/log(1.0023055678241)+2000)
-print index
-echo ".csparam index=$&index" > index.txt
 
 *input impedance in ohm
 
-let RE_zi= RE(-v(in)[index]/i(Vin)[index])
-let IM_zi= IM(-v(in)[index]/i(Vin)[index])
+let RE_zi= RE(-v(in)[2000]/i(Vin)[2000])
+let IM_zi= IM(-v(in)[2000]/i(Vin)[2000])
 echo "in_imp_TAB"
 echo "Input Imp = $&RE_zi + $&IM_zi j"
 echo "in_imp_END"
 
-let av_dev = abs(100-10^(maximo/20))
+let custo = 13323.1 + 103.66
+let av_dev = abs(100-(10^(gain/20)))
 let freq_dev = abs(1000-fO)
-let merit_no_price = 1/(av_dev*freq_dev)
-print av_dev
-print freq_dev
-print merit_no_price
+let merit = 1/(custo*(av_dev+freq_dev+1e-6))
+
+echo "merit_TAB"
+echo "AV dev = $&av_dev = "
+echo "Freq dev = $&freq_dev = Hz"
+echo "Cost = $&custo = MU"
+echo "Merit = $&merit = "
+echo "merit_END"
 
 
 quit

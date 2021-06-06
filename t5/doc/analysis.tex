@@ -1,365 +1,192 @@
 \section{Theoretical and Simulation Analysis}
 \label{sec:analysis}
 
-In order to compare \textit{side by side}, we'll discuss the theoretical and simulation analysis at the same time.
-
-However, one has to present and analyse the two stages in order to fully understand the simulation. The constants values used are expressed in the table below.
+In order to compare \textit{side by side}, we'll discuss the theoretical and simulation analysis at the same time. However, one has to present and analyse the three stages in order to fully understand the simulation. The constants values used are expressed in the table below.
 
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|c|c|}
     \hline
     {\bf Name} & {\bf Value} & {\bf Units} \\ \hline
-    $R_1$ & $33.7$ & $k\Omega$ [kOhms] \\ \hline
-    $R_2$ & $3.6$ & $k\Omega$ [kOhms] \\ \hline
-    $R_C$ & $3.8$ & $k\Omega$ [kOhms] \\ \hline
-    $R_E$ & $200$ & $\Omega$ [Ohms] \\ \hline
-    $R_{out}$ & $400$ & $\Omega$ [Ohms] \\ \hline
-    $C_{in}$ & $800$ & $\mu F$ [$\mu$Farads]\\ \hline
-    $C_E$ & $800$ & $\mu F$ [$\mu$Farads] \\ \hline
-    $C_o$ & $600$ & $\mu F$ [$\mu$Farads] \\ \hline
+    $R_1$ & $1000$ & $\Omega$ [Ohms] \\ \hline
+    $R_2$ & $1000$ & $\Omega$ [Ohms] \\ \hline
+    $R_3$ & $100000$ & $\Omega$ [Ohms] \\ \hline
+    $R_4$ & $1000$ & $\Omega$ [Ohms] \\ \hline
+    $C_1$ & $220$ & $\eta F$ [$\eta$Farads]\\ \hline
+    $C_2$ & $110$ & $\eta F$ [$\eta$Farads] \\ \hline
     \end{tabular}
-    \caption{Constants Values}
+    \caption[Constants Values]{Constants Values \footnotemark}
     \label{tab:constants}
 \end{table}
 
-\subsection{Gain Stage}
+\footnotetext{Not that the value of $C_1$ reflects two 220 $\eta$F capacitors in series, as seen in Figure \ref{fig:circuitol5}}.
+
+\subsection{High Pass Stage}
 \label{subsec:stat}
 
-Firstly, we must discuss the first half of the circuit that was used. Its goal is to ensure a high input voltage so the input signal is not degradated or distorted throughout the circuit. It also has an elevated gain associated, so this is the part that is responsible for the signal amplification.
+Firstly, we must discuss the first third of the circuit that was used. 
+It is easy to understand that it works as voltage divider,
+
+\begin{equation}
+    v_{HP}=v_{R_1}=\frac{R_1}{R1+\frac{1}{j\omega C_1}}v_i
+\end{equation}
+
+which can be written as:
+
+\begin{equation}
+    A_{HP}=\frac{v_{R_1}}{v_{in}}=\frac{j R_1 \omega C_1}{j R_1 \omega C_1 + 1}
+\end{equation}
+
+For high frequencies ($\omega >> 1$), the voltage at the resistor tends to $v_i$ and for low frequencies ($\omega << 1$), it tends to 0.
+In reality, this is a simple RC Series circuit, acting as a high pass filter.
 
 A scheme of this circuit is presented below.
 
+
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.4]{gain_stage_l4.pdf}
-    \caption{Gain Stage}
-    \label{fig:gain_stage}
+    \includegraphics[scale=0.35]{high_pass_l5_old.pdf}
+    \caption{High Pass Stage}
+    \label{fig:high_pass_stage_old}
 \end{figure}
 
-As one can see, there are 3 types of elements: a NPN BJT, resistors and capacitors.
+\subsection{Amplification Stage}
 
-The first capacitor, $C_{in}$, is a coupling capacitor, as it acts as a DC Block, so that $V_{in}$ doesn't impose a DC component of 0, that would change the OP of the transistor.
+In this second stage we have the amplification of the signal. It is where the gain is maximum. This configuration uses a Non-Inverting Amplifier (the + part of the OPAMP is connected to the input \textit{i.e.}, the output of the first stage and the - is connected to the feedback resistors). 
+It is worth noticing that, depending on the values of $R_3$ and $R_4$ we can achieve higher or lower gains, hence the gain is given by,
 
-The second capacitor, $C_E$, acts as a bypass capacitor, for it ensures that for low frequencies all the current flows through $R_E$, and for high frequencies, it passes through the capacitor.
-
-Generally, the output impedance of this stage ($Z_{O1}$) is high, when compared with the load, being the major reason why one cannot use just this stage, and we need another one.
-
-\subsection{Output Stage}
-
-As we could see in the previous section, the Gain Stage has a high $Z_{O1}$. For that reason, we connect a second circuit to the output of the Gain Stage, that presents a low output impedance.
+\begin{equation}
+    AV_{AMP}=1+\frac{R_3}{R_4}
+\end{equation}
 
 A scheme of this stage is presented below, 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.5]{output_stage_l4.pdf}
-    \caption{Output Stage}
-    \label{fig:regulator}
+    \includegraphics[scale=0.3]{amp_l5_old.pdf}
+    \caption{Amplification Stage}
+    \label{fig:amp_old}
 \end{figure}
 
-As one can see, this circuit presents similar components, however, with mild differences.
+\subsection{Low Pass Stage}
 
-Instead of a NPN BJT, we use a PNP BJT, because it has a higher $\beta_F$, which lowers the output impedance (which is what we want). Besides, it illustrates the use of another BJT transistor.
+In this last stage, we have an analogous circuit to the the High Pass one, except that at this time we are interested in the voltage at the capacitor, instead of the one on the resistor, in order to cut high frequencies.
 
-Another capacitor, $C_o$, is used with a similar goal as the previous coupling capacitor. If we didn't use such component, the gain stage would impose a DC voltage of 0 to the second stage, which would ruin the transistor's OP. 
+A scheme of this stage is presented below, in Figure \ref{fig:low_pass}
 
-As we'll see, we end up with a lower output impedance in this stage (when compared to the load) and a higher input impedance (when compared to the output impedance of the gain stage).
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{low_pass_l5_old.pdf}
+    \caption{Low Pass Stage}
+    \label{fig:low_pass}
+\end{figure}
 
-When combining both stages, we need to ensure that there is a compatibility  between the impedances. In fact, by the voltage divider law, to make sure no voltage signal is lost, the input impedance of the second stage should be much greater than the output impedance of the first one. 
+By applying the voltage divider law, this time we get:
 
-In conclusion, when we merge these two circuits, we end up with our BJT Amplifier as seen in Figure \ref{fig:circuitol4}.
+\begin{equation}
+    v_{LP}=\frac{\frac{1}{j \omega C_2}}{\frac{1}{j \omega C_2} + R_2}v_{amp}
+\end{equation}
 
-\clearpage
+which can be simplified to:
+
+\begin{equation}
+    A_{LP}=\frac{v_{LP}}{v_{amp}}=\frac{1}{1 + j \omega C_2 R_2}
+\end{equation}
+
+For high frequencies ($\omega >> 1$), the voltage at the capacitor tends to 0 and for low frequencies ($\omega << 1$), it tends to $v_{amp}$.
+
+When combining the three stages, we end up with our Active Pass-band filter as seen in Figure \ref{fig:circuitol5}.
+
+Finally, it is worth noticing that we chose, among other possible options, this circuit's architecture due to its understandable behaviour: a first part blocks low frequencies, a second part amplifies the signal and a last part cuts high frequencies.
+
 \subsection{Theoretical Analysis}
-\label{subsec:Theo}
+\label{subsec:theo_analysis}
 
-Firstly, it is important to run an OP analysis of the circuit in order to compute the voltage drops within each of the transistors to ensure they are operating in the forward active region (FAR). To confirm this, the voltages between the emitter and collector as well as between emitter and base (for each of the transistors) were calculated and compared, confirming FAR as seen in the tables below:
+On the Theoretical side, we will evaluate the central frequency ($f_o$), the two impedances: input and output, respectively ($Z_I$ and $Z_O$), as well as the three gains associated with each stage ($AV_{HP}$,$AV_{amp}$ and $AV_{LP}$).
+
+\subsubsection{Central Frequency}
+
+The Central Frequency ($f_o$) is the frequency at the center of the passband of the filter. In this laboratory we want $f_o=\omega_o/2\pi$ to be as close to 1kHz as possible.
+\par
+As for the mathematical expressions, the Lower Cut-off Frequency ($\omega_L$), the Higher Cut-off Frequency ($\omega_H$) and the Central Frequency are given by,
+
+\begin{equation}
+    \omega_L=\frac{1}{R_1C_1} \qquad \omega_H=\frac{1}{R_2C_2} \qquad \omega_o=\sqrt{w_L*w_H}=\sqrt{\frac{1}{R_1C_1R_2C_2}}
+\end{equation}
+
+As a remark, if both frequencies, $f_L$ and $f_H$, are equal, $f_o$ is going to be also equal and the passband width is going to be 0 - in the plot, we can see a peak instead of a highland.
+
+The theoretical values of the lower cut-off frequency, the high cut-off frequency, and the central frequency are presented in the table below and will be better analysed and compared in Section \ref{subsec:comparison}.
 
 \begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    {\bf Name} & {\bf Value} \\ \hline
-    \input{FAR_NPN_del.tex}
-    \end{tabular}
-    \caption{NPN voltages and FAR confirmation}
-    \label{tab:theo_NPN}
+   \centering
+   \begin{tabular}{|l|c|}
+   \hline
+   {\bf Name} & {\bf Value [Hz]} \\ \hline
+   \input{freq_theo_del.tex}
+   \end{tabular}
+   \caption{Frequencies (Lower, Higher and Central)}
+   \label{tab:theo_freq}
 \end{table}
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    {\bf Name} & {\bf Value} \\ \hline
-    \input{FAR_PNP_del.tex}
-    \end{tabular}
-    \caption{PNP voltages and FAR confirmation}
-    \label{tab:theo_PNP}
-\end{table}
-
-As we can see, since V(CE) is greater than V(BEON), (as well as V(EC) with V(EBON)), the forward active region is confirmed for each of the transistors, meaning it's safe to operate in these conditions.
-
-As we'll be able to see in section \ref{subsec:Sim}, the theoretical and simulation results match up considerably well, not only at checking the FAR but also when comparing the values.
-
 
 \subsubsection{Impedances}
 
-On the Theoretical side, we will evaluate the four impedances associated with the two stages ($Z_{I1}, Z_{O1}, Z_{I2}$ and $Z_{O2}$) as well as the two gains associated with each stage ($A_{V1}$ and $A_{V2}$).
-To do so, we need to perform an Operating Point Analysis to find the values necessary for the Incremental Analysis.
-
-Regarding the first stage (Gain Stage), the input and output impedances (\{$Z_{I1}$, $Z_{O1}$\}, respectively) can be derived by KVL and KCL, leading us to the following expressions:
+As for the impedances, we have the input and output impedances to be,
 
 \begin{equation}
-    Z_{I1}=R_B // r_{\pi 1}
-\end{equation}
-where $R_B=R_1 // R_2$.
-
-Because of the presence of the bypass capacitor and also because in this theorectical approach it is assumed the capacitors are short-circuited (high-frequency analysis), $R_E \simeq 0$. This first stage input impedance matches also with the total input impedance of the circuit, as this stage is load-independent.
-
-On the other hand, the first stage output impedance can be obtained by:
-
-\begin{equation}
-    Z_{O1}=r_o // R_C  
+    Z_I=R_1+Z_{C_1}=R_1+\frac{1}{j\omega C_1} \qquad Z_O=Z_{C_2} || R_2 = \frac{1}{j\omega C_2} || R_2
 \end{equation}
 
-\clearpage
-
-Regarding the second stage, by analysing the circuit we get:
-
-\begin{equation}
-    Z_{I2}=\frac{(g_{m2}+g_{\pi2}+g_{o2}+g_{E2})}{g_{\pi2}(g_{\pi2}+g_{o2}+g_{E2})}
-\end{equation}
-
-\begin{equation}
-    Z_{O2}=\frac{1}{(g_{m2}+g_{\pi2}+g_{o2}+g_{E2})}
-\end{equation}
-
-And finally, the total output impedance:
-
-\begin{equation}
-    Z_{OT}=\frac{v_o}{i_o}=\frac{1}{g_{o2}+g_{m2}\frac{r_{\pi2}}{r_{\pi2}+Z_{O1}}+g_{E2}+\frac{1}{r_{\pi2}+Z_{O1}}}
-\end{equation}
-
-The 4 values are presented below,
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|l|c|}
-    \hline
-    {\bf Impedances} & {\bf Ohms ($\Omega$)} \\ \hline
-    \input{theo_imp_del.tex}
-    \end{tabular}
-    \caption{Theoretical Impedances}
-    \label{tab:theo_imp}
-\end{table}
-
-As a result of the compromise between the cost and overall performance, the total output impedance was unpurposely sacrified, which is of course not what we would desire (especially because the speaker impedance is 8 $\Omega$). 
-
-As one can see, regarding the compatibility between both stages (remembering that $Z_{O1}$ needs to be  much lower than $Z_{I2}$), we have pretty satisfactory results. This is needed so that there is no signal degradation or loss between these stages. It's clear that $V_{in2}$ needs to be as close as possible to $V_{O2}$, confirmed if we apply a voltage divider with $Z_{I2}>>Z_{O1}$:
-
-\begin{equation}
-    V_{in2} = \frac{Z_{I2}}{Z_{I2}+Z_{O1}} V_{O2}. 
-\end{equation}
-
-\subsubsection{Gain}
-
-In order to calculate the total gain ($A_{V}$) we performed a simple multiplication, so that we have $A_V=A_{V1}A_{V2}$. Although being an approximation, the real interaction between both stages is negligible, and because of that we can compute the gain as if it was the total gain of both separate stages.
-
-We present a compilation of the values below,
-
-
-\begin{table}[h]
-\parbox{.4\linewidth}{
-  \centering
-    \begin{tabular}{|l|c|}
-    \hline
-    {\bf Gain} & {\bf Value} \\ \hline
-    \input{theo_gain_high_del.tex}
-    \end{tabular}
-    \caption{Theoretical upper gain bound results}
-    \label{tab:theo_gains_high}
-  }
-  \hfill
-  \parbox{.4\textwidth}{
-  \centering  
-  \begin{tabular}{|c|c|}
-    \hline    
-    {\bf Gain} & {\bf Value} \\ \hline
-    \input{theo_gain_low_del.tex}
-  \end{tabular}
-  \caption{Theoretical lower gain bound results}
-  \label{tab:theo_gains_low}
-  }
-  \end{table}
-  
-Note that the first approximation considers $C_E$ to be short-circuited and the second one that $C_E$ behaves as an open circuit. The simulation results should bear within these two boundaries (as they actually do, see table \ref{tab:sim_results}) since the capacitor is never either \textit{SC} or \textit{OC}. These bounds as well as an approximation for the real gain will be plotted in Section \ref{subsec:comparison}.
-
-In order to acquire a better comparison between theory and simulation, besides this aproach, that considers the gain to be constant through all the frequencies , we also performed the \textit{Time constant method} for the lower cut-off frequency.
-
-We calculate the lower cut-off frequency ($\omega_L=2\pi f_{CO_L}$) as,
-
-\begin{equation}
-    \omega_L=1/{R_{eq_i}C_i} + 1/{R_{eq_e}C_e} + 1/{R_{eq_o}C_o}
-    \implies f_{CO_L}=2\pi w_L
-\end{equation}
-
-where $R_{eq}\equiv$ equivalent resistor as seen by each capacitor when the others are short-circuits.
-
-We have,
-
-\begin{equation}
-    R_{eq_{in}} = R_{in}+Z_{I1}
-\end{equation}
-
-\begin{equation}
-    R_{eq_e} = R_E // (\frac{1}{\frac{1}{R_s||R_B+r_{\pi}}+\frac{g_m r_{\pi}}{R_s||R_B+r_{\pi}}}) \simeq R_E//(\frac{r_{\pi}+R_s||R_B}{r_{\pi}}\frac{1}{g_m}) \simeq 1/g_{m}
-\end{equation}
-
-\begin{equation}
-    R_{eq_o}=R_L+Z_{O}
-\end{equation}
-
-One could also do the reciprocal, but with the capacitors as open circuits in order to determine the higher cut-off frequency.
-Like that, we just have to consider as approximation, a slope of $+20dB/dec$, until $f_{CO_L}$ is reached (which gives a better approximation than the constant gain one).
-
-The theoretical value of the lower cut-off frequency is presented in the table below and will be better analysed and compared in Section \ref{subsec:comparison}.
+Below, we present the values of these impedances, for the asked value of 1kHz,
 
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|c|}
     \hline
     {\bf Name} & {\bf Value [Hz]} \\ \hline
-    \input{theo_CO_freq_band_del.tex}
-    \end{tabular}
-    \caption{Theoretical Lower Cut-off frequency}
-    \label{tab:theo_CO_freq}
+    \input{imp_theo_del.tex}
+   \end{tabular}
+   \caption{Impedances}
+   \label{tab:theo_imp}
 \end{table}
 
-\clearpage
+When it comes to the functionality of the circuit, one has to remember that it is important to have a high input impedance (as high as possible) - in order to have a minimum degradation of the input signal. On the other hand, the output impedance needs to be as low as possible, especially when connecting a load to the output of this circuit. Of course, our results regarding the output impedance of the circuit are not satisfactory, however, because of the limitations of the components it was very tough to reduce this. One solution would be to replace $R_2$ with a parallel of several resistances, so that the equivalent resistance would be much less. Another solution would be to add more capacitors in series with $C_2$, decreasing the equivalent reactance seen from a load. However this would be a hard bill to pay because the overall gain would decrease too much below the 40dB wanted, which will be explained in greater detail in the next Section. Adding to this, we were not giving any specific impedance value for the load, but we only can assure good compatibility with very high impedance loads with this specific circuit.  
 
-\subsection{Simulation Analysis}
-\label{subsec:Sim}
+\subsubsection{Gain}
 
-On the Simulation Side, we are interested in the two impedances associated with the circuit as a whole ($Z_I$ and $Z_O$), both cut-off frequencies ($f_{CO_L}$ and $f_{CO_H}$), the bandwidth (interval between the cut-off frequencies) and the total gain ($A_V$) measured in the bandpass region. The measurement of these parameters and the overall performance of the circuit is outlined in \ref{sec:merit}.
+In order to calculate the total gain ($A_{V}$) we performed a simple multiplication, so that we have $A_{V_{HP}}A_{V_{amp}}A_{V_{LP}}$ (when working with dBs, this multiplication is, in reality, a sum). 
 
-We also confirm whether the BJTs are on the Forward Active Region (FAR), by comparing $V_{CE}$ and $V_{BE}$ for the NPN (and, analogously, $V_{EC}$ and $V_{EB}$ for PNP). 
+The Transfer Function is given by,
 
-The confirmation is presented below:
+\begin{equation}
+    T(s)=\frac{R_1C_1s}{1+R_1C_1s}\bigg(1+\frac{R_3}{R_4}\bigg)\frac{1}{1+R_2C_2s}
+\end{equation}
+
+where $s=j\omega+\sigma$ and $\sigma=0$ (for sinusoidal waves).
+
+We can identify $T(s)$ to be the multiplication of $T_i(s)\equiv$ transfer function of the $i-th$ stage. 
+
+When substituting the frequency, $f=\frac{\omega}{2\pi}= 1000 Hz$, we have the results below,
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|c|c|}
+    \begin{tabular}{|l|c|}
     \hline
-    {\bf Name} & {\bf Value} \\ \hline
-    \input{NPN_tab.tex}
-    \end{tabular}
-    \caption{NPN voltages and FAR confirmation}
-    \label{tab:NPN}
+    {\bf Name} & {\bf Value [dB]} \\ \hline
+    \input{gain_theo_del.tex}
+   \end{tabular}
+   \caption{Theoretical Gains}
+   \label{tab:theo_gain}
 \end{table}
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    {\bf Name} & {\bf Value} \\ \hline
-    \input{PNP_tab.tex}
-    \end{tabular}
-    \caption{PNP voltages and FAR confirmation}
-    \label{tab:PNP}
-\end{table}
-
-
-Regarding the results obtained, we present them in the table below:
-
-\begin{table}[h]
-    \centering
-    \begin{tabular}{|c|c|c|}
-    \hline
-    {\bf Name} & {\bf Value} & {\bf Units}\\ \hline
-    \input{gain_band_COfreq_tab.tex}
-    \end{tabular}
-    \caption{Simulation results}
-    \label{tab:sim_results}
-\end{table}
-
-These results are to be explained and compared to the theoretical approach further into the report. But as quick note, we can see, as previously mentioned, that the value of the Gain, in dB, is within the theoretical boundaries prediction.
-
-
-\subsubsection{Coupling Capacitors}
-
-The understanding of the Coupling Capacitors' behaviour is crucial in order to analyse this circuit. In our BJT amplifier circuit there are two coupling capacitors ($C_O$ and $C_{in}$) but, since their functions are analogous, we shall focus on the capacitor $C_{in}$.
-
-Below, we present 2 figures of the frequency response analysis, just by changing the parameter $C_{in}$ in a drastical way.
-
-\begin{figure}[h]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[scale=0.33]{images/cilow_1n.eps}
-    \caption{$C_i$ low (1$nF$)}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[scale=0.33]{images/cihigh_1.eps}
-    \caption{$C_i$ high (1$F$)}
-\end{subfigure}
-\caption{$C_{in}$ influence}
-\end{figure}
 
 \pagebreak
 
-As one can realise, the increase of the capacitance \textit{pushes} the cutoff frequency to the left, anticipating it, without changing the higher cut-off frequency, which leads to a larger bandwidth (desired).
+\subsection{Simulation Analysis}
+\label{subsec:sim_analysis}
 
-This is not surprising because, as discussed previously, as $\omega \to 0$, $Z(C_{in}) \to \inf$, so this capacitor prevents the transistor from entering on either the saturation or cut-off regions, by blocking the DC component of the AUDIO IN source, as previously discussed. This helps mantaining the OP of the transistor, so that it can operate at lower frequencies, as $C_{in}$ increases.
+When it comes to the simulation analysis, using \textit{Ngspice}, we can get the values of $Z_I$, $Z_O$, $f_O$ and also $A_v$.
 
-\subsubsection{Bypass Capacitor}
-
-Below, we present 2 figures of the frequency response analysis, just by changing the parameter $C_E$.
-
-\begin{figure}[h]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[scale=0.33]{images/celow_1n.eps}
-    \caption{Low $C_E$ effect on Gain (1$nF$)}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[scale=0.33]{images/cehigh_1.eps}
-    \caption{High $C_E$ effect on Gain (1$F$)}
-\end{subfigure}
-\caption{$C_E$ influence}
-\end{figure}
-
-Besides that, by placing the bypass capacitor in parallel with $R_E$, this resistor becomes short for medium and high frequencies - remember the capacitor impedance is $\frac{1}{j\omega C}$. Because the amplifier's first stage gain is inversely dependent on this resistance, the bypass capacitor plays an extremelly important role in maximizing the gain for medium and high frequencies.
-
-\subsubsection{$R_C$}
-
-Finally, it is relevant to analyse the influence of $R_C$ on the total Gain of the circuit. 
-
-We also present assymptotical situations in order to fully understand that behaviour.
-
-\begin{figure}[h]
-\centering
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[scale=0.33]{images/rclow_10.eps}
-    \caption{Low $R_C$ effect (on the Gain) (10$\Omega$)}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-    \centering
-    \includegraphics[scale=0.33]{images/rchigh_100k.eps}
-    \caption{High $R_C$ effect on Gain (10$k\Omega$)}
-    \label{fig:RC_High}
-\end{subfigure}
-\caption{$R_C$ influence (on the Gain)}
-\end{figure}
-
-
-As one can see, not only the gain increases with $R_C$ but also \textit{antecipates} the passband. This behaviour was already previewed by the theorectical anlysis on the gain, as it is proportional to $R_C$. Note that for extremely large resistance, a bizarre and slightly unpredictable behaviour occurs. 
-
-Moreover, it is important, in order to guarantee a high compatibility with AUDIO IN and speakers, to simulate the input and output impedances of the circuit. This good compatibility is ensured with a very high input impedance ($Z_I$) and a very low output impedance ($Z_O$).  The simulation results are expressed in the following tables:
+Below, we present some tables with this data,
 
 \begin{table}[h]
     \centering
@@ -368,10 +195,9 @@ Moreover, it is important, in order to guarantee a high compatibility with AUDIO
     {\bf Name} & {\bf Value [$\Omega$]} \\ \hline
     \input{in_imp_tab.tex}
     \end{tabular}
-    \caption{Simulation Input Impedance}
-    \label{tab:simulation_input_imp}
+   \caption{Experimental Input Impedance}
+   \label{tab:exp_in_imp}
 \end{table}
-
 \begin{table}[h]
     \centering
     \begin{tabular}{|l|c|}
@@ -379,67 +205,177 @@ Moreover, it is important, in order to guarantee a high compatibility with AUDIO
     {\bf Name} & {\bf Value [$\Omega$]} \\ \hline
     \input{out_imp_tab.tex}
     \end{tabular}
-    \caption{Simulation Output Impedance}
-    \label{tab:simulation_output_imp}
+   \caption{Experimental Output Impedance}
+   \label{tab:exp_out_imp}
 \end{table}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+    \hline
+    {\bf Name} & {\bf Value} & {\bf Units}\\ \hline
+    \input{gain_freq_sim_tab.tex}
+    \end{tabular}
+   \caption[Experimental Gain and Central Frequency]{Experimental Gain\footnotemark and Central Frequency}
+   \label{tab:exp_gain_freq}
+\end{table}
+\footnotetext{Measured at 1000Hz }
 
-As with the theoretical analysis, this simulation also gives off a slightly high output inpedance (which should ideally be lower than the load's 8 $\Omega$). As stated this fact results from the compromise needed for the merit figure.
-\pagebreak
+In the next section we'll discuss these results, comparing them to the theoretical ones.
 
 \subsection{Comparison}
 \label{subsec:comparison}
 
-We are now ready to make a global comparison of the two approaches, with the chosen values for the constants. Below, we present both the theoretical and simulation graphs of the gain:
+We are now ready to make a global comparison of the two approaches, with the chosen values for the constants. In the following page, we present both the theoretical and simulation graphs of the frequency response of the gain and the phase.
 
-\vspace{-2.5cm}
+Overall, we have pretty satisfactory results. When one performs an initial comparison of the gain response, using the shape of the graph, it is easy to realise that they have a similar behaviour. In the initial section, there is a constant slope of +20dB/dec; after that, there exists a small passband (its width is not aim of study in this laboratory), also the region where we achieve the central frequency, and a last part with a slope of -20dB/dec.
+
+When it comes to the phase response, both plots differ. This is because our theoretical model does not predict the existence of capacitors in the OPAMP, as it idealises its gain to be purely real (no shift in phase). In reality, because the OPAMP has two capacitors, it is expected that in the phase frequency response plot each would introduce a shift of -90º, making the overall phase to go down to -270º = +90º. 
+
+Remembering the tables presented above, we have small relative errors for the values of interest (the impedances, the total gain and the central frequency). This somehow proves that, eventhough the OPAMPs are made of dozens of components, some of them non-linear, we can predict with a fairly simple model its behaviour. 
 
 \begin{figure}[h]
 \centering
 \begin{subfigure}{.5\textwidth}
     \centering
     \vspace{2.8 cm}
-    \includegraphics[scale=0.4]{theo_results.eps}
-    \caption{Theoretical Gain}
+    \includegraphics[scale=0.4]{theo_gain_f_response.eps}
+    \caption{Theoretical Gain Response}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
     \centering
-    \includegraphics[scale=0.33]{vo2f.pdf}
-    \caption{Simulation Gain}
+    \includegraphics[scale=0.33]{vodb.pdf}
+    \caption{Simulation Gain Response}
 \end{subfigure}
-\caption{Gain}
-\label{fig:Gain}
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \vspace{2.8 cm}
+    \includegraphics[scale=0.4]{theo_phase_f_response.eps}
+    \caption{Theoretical Phase Response}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+    \centering
+    \includegraphics[scale=0.33]{voph.pdf}
+    \caption{Simulation Phase Response}
+\end{subfigure}
+\caption{Frequency Response}
+\label{fig:freq_resp}
 \end{figure}
 
-In this case, the comparison of the shape can only be done on the left side, since we don't have the theoretical higher cut-off frequency. For this reason, there's no point in plotting the theoretical gain any further than $1 MHz$.
+\clearpage
 
-One should bear in mind that the theorectical analysis either considers the capacitors are short-circuited or are open-circuited (this approximation is made when for this analysis, the value of $R_E$ is either $0$ or $R_E$ in Table \ref{tab:constants}, respectively). For this reason, two estimates were made (Figure \ref{fig:Gain}) - in blue the capacitors are considered short-circuited; in orange the capacitors are considered open-circuited; in yellow dashed it is represented the medium-value plot, that can be considered as a rough approximation of the real gain. This theorectical approach does not guarantee a specific value for the overall gain, however it gives us a region of acceptable gains. The simulation gain obtained is satisfyingly in this prediction region. 
-
-The overall shape of the graphs is similar, noting that the theoretical one can be thought of as assymptotical rather than a precise approach. In fact, as we imposed its shape, accordingly to the one given by \textit{Ngspice}, it is not sensible to variations that might occur (as the appearance of a \textit{second step} in \ref{fig:RC_High}).
-
-In a greater detail analysis, when remembering the values presented in the previous subsections - $Z_I$ and $Z_O$, $A_v$ and $f_{CO_L}$ -, despite the obvious differences, the comparison is satisfactory. Comparing the order of magnitude, when putting values side by side, they are within reasonable intervals of similarity. In fact, the lower cut-off frequencies (from tables \ref{tab:theo_CO_freq} and \ref{tab:sim_results}) are really close, especially when you remember they are to be plotted in a logscale graph.
-
-In conclusion, the theoretical approach gives a rough perspective of the overall work conditions of the amplifier, which is good in a first \textit{sketch}.
-
-\section{Merit Results}
+\section{Non-Improved Merit Results}
 \label{sec:merit}
 
-From the results obtained through the Ngspice simulation (see Section \ref{subsec:comparison}) and considering we used the data shown in Section \ref{sec:introduction}, we can compute the price and the merit using the \textit{formulae} given in the lab assignment:
+From the results obtained through the \textit{Ngspice} simulation (see Section \ref{subsec:comparison}) and considering we used the data shown in Section \ref{sec:introduction}, we can compute the price and the merit using the \textit{formulae} given in the lab assignment:
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{|l|c|}
+    \begin{tabular}{|l|c|c|}
     \hline
-    {\bf Name} & {\bf Value} \\ \hline
-    \input{custo_merito_tab.tex}
-    \end{tabular}
-    \caption{Total Price and Merit}
-    \label{tab:price_merit}
+    {\bf Name} & {\bf Value} & {\bf Units} \\ \hline
+    \input{merit_tab.tex}
+   \end{tabular}
+   \caption{Merit Results}
+   \label{tab:merit}
 \end{table}
 
-For our strategy, we opted to firstly understand what each component would produce when its values changed dramatically . So we analysed the circuit \textit{assymptotically} in order to acquire a bigger picture of the influence of each component.
+\section{Circuit Improvements}
+\label{sec:circuit_improvements}
 
-After understanding that, we then made small adjustments to further perfect our results, which in turn made the merit figure rise. In this approach, we left the cost as a second thought.   
+Because some specifications of our circuit are a bit lacklustre, some additional improvements can be made. The main approach to improve the overall results was to increase the gain of the OPAMP stage. This was done by adding a bypass capacitor in series with resistor $R_4$. The expression of the gain is:
 
-To conclude, we began decreasing the cost until we found out the perfect compromise for us, giving the results shown in table \ref{tab:price_merit}.
+\begin{equation}
+    A_v=1+\frac{Z_3}{Z_4}
+\end{equation}
+
+By adding the bypass capacitor, the impedance $Z_4$ decreases for high frequencies, and so the gain increases.
+
+In order do adjust the low and high cut-off frequencies, some modifications were made to perfect these values, since the goal is that:
+
+\begin{equation}
+    f_o= \frac{\sqrt{w_H w_L}}{2\pi} = 1000 Hz
+\end{equation}
+
+These modifications were mainly the addition of resistors in series/parallel to increase/decrease the equivalent resistance seen and add, in the same way, capacitors in series/parallel in order to decrease/increase the overall capacity. This perfected both the gain at $1000 Hz$ as well as the low and high cut-off frequencies.   
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{circuitl5_new.pdf}
+    \caption{Improved circuit}
+    \label{fig:new_circuit}
+\end{figure}
+
+\clearpage
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+    \hline
+    {\bf Name} & {\bf Value} & {\bf Units} \\ \hline
+    $R_1$ & $500$ & $\Omega$ [Ohms] \\ \hline
+    $R_2$ & $30000$ & $\Omega$ [Ohms] \\ \hline
+    $R_3$ & $100000$ & $\Omega$ [Ohms] \\ \hline
+    $R_4$ & $1000$ & $\Omega$ [Ohms] \\ \hline
+    $C_1$ & $220$ & $\eta F$ [$\eta$Farads]\\ \hline
+    $C_2$ & $220$ & $\eta F$ [$\eta$Farads] \\ \hline
+    $C_{aux}$ & $1.5$ & $\mu F$ [$\mu$Farads]\\ \hline
+    \end{tabular}
+    \caption[Constants Values for the improved circuit]{Constants Values \footnotemark for the improved circuit}
+    \label{tab:constants_new}
+\end{table}
+\footnotetext{Note that these values reflect and summarise the composition shown in Figure \ref{fig:new_circuit} and, as so, some components may actually reflect a certain composition of multiple ones.}
+The results that come from these modifications are shown below:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+    \hline
+    {\bf Name} & {\bf Value} & {\bf Units} \\ \hline
+    \input{gain_freq_sim_new_tab.tex}
+    \end{tabular}
+    \caption[Improved Results]{Improved Results \footnotemark}
+    \label{tab:results_new}
+\end{table}
+\footnotetext{Gain is measured at a frequency of 1000Hz.}
+\vspace{-3 cm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.33]{vodb_new.pdf}
+    \caption{Gain Frequency Response}
+    \label{fig:gain_resp_new}
+\end{figure}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+    \hline
+    {\bf Name} & {\bf Value [$\Omega$]}  \\ \hline
+    \input{in_imp_new_tab.tex}
+    \input{out_imp_new_tab.tex}
+    \end{tabular}
+    \caption{Input and Output Impedances}
+    \label{tab:imp_new}
+\end{table}
+
+With these changes, we managed to decrease massively the output impedance. With this configuration, the circuit is much more prepared to be connected to a greater range of loads, which increases its utility in practical terms. Another plus are the better results, as shown in table \ref{tab:results_new}, when compared to the ones previously obtained (in table \ref{tab:exp_gain_freq}).
+
+\pagebreak
+
+\section{Improved Merit Results}
+\label{sec:merit_new}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|c|c|}
+    \hline
+    {\bf Name} & {\bf Value} & {Units}\\ \hline
+    \input{merit_new_tab.tex}
+    \end{tabular}
+    \caption{Improved Merit Results}
+    \label{tab:merit_new}
+\end{table}
+
+With the improvements made, even though the central frequency was slightly worse, the benefit of the increase in the gain excelled making the merit figure rise, giving us the results shown in table \ref{tab:merit_new}.
+
 
 
